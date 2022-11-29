@@ -620,6 +620,8 @@ def get_dataloader(dataset, config, shuffle=True, neighborhood_limits=None):
         collate_fn = collate_fn_4dmatch
     elif config.dataset == '3dmatch':
         collate_fn = collate_fn_3dmatch
+    elif config.dataset == 'astrivis':
+        collate_fn = collate_fn_4dmatch
     else:
         raise NotImplementedError()
 
