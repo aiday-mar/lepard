@@ -604,9 +604,9 @@ def get_datasets(config):
         val_set = _4DMatch(config, 'val', data_augmentation=False)
         test_set = _4DMatch(config, 'test', data_augmentation=False)
     elif(config.dataset == 'astrivis'):
-        train_set = _Astrivis(config, 'train', data_augmentation=True)
-        val_set = _Astrivis(config, 'val', data_augmentation=False)
-        test_set = _Astrivis(config, 'test', data_augmentation=False)    
+        train_set = _Astrivis(config, 'train')
+        val_set = _Astrivis(config, 'val')
+        test_set = _Astrivis(config, 'test')    
     else:
         raise NotImplementedError
 
