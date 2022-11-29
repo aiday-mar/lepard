@@ -102,7 +102,7 @@ iter_size: 1
 dataset: 4dmatch
 folder: -final
 batch_size: 1
-num_workers: 10
+num_workers: 0
 augment_noise: 0.002
 data_root: /home/aiday.kyzy/code/lepard/4dmatch
 split: {

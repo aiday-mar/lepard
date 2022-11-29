@@ -100,7 +100,7 @@ iter_size: 1
 dataset: 3dmatch
 folder: -last
 batch_size: 1
-num_workers: 8
+num_workers: 0
 augment_noise: 0.005
 data_root: /home/aiday.kyzy/code/lepard/3dmatch
 split: {
