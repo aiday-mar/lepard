@@ -102,7 +102,7 @@ folder: -last
 batch_size: 1
 num_workers: 8
 augment_noise: 0.005
-data_root: data/indoor
+data_root: ../3dmatch
 split: {
   "train": configs/indoor/train_info.pkl,
   "val": configs/indoor/val_info.pkl,
