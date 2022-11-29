@@ -110,7 +110,5 @@ class _Astrivis(Dataset):
         trans = trans.transpose()
         
         metric_index = None
-        depth_paths = None 
-        cam_intrin = None
         
-        return src_pcd, tgt_pcd, src_feats, tgt_feats, correspondences, rot, trans, s2t_flow, metric_index, depth_paths, cam_intrin
+        return src_pcd, tgt_pcd, src_feats, tgt_feats, correspondences, rot, trans, s2t_flow, metric_index
