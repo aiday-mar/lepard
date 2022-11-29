@@ -5,6 +5,7 @@ import cpp_wrappers.cpp_subsampling.grid_subsampling as cpp_subsampling
 import cpp_wrappers.cpp_neighbors.radius_neighbors as cpp_neighbors
 from datasets._3dmatch import _3DMatch
 from datasets._4dmatch import _4DMatch
+from datasets._astrivis import _Astrivis
 from datasets.utils import blend_scene_flow, multual_nn_correspondence
 from lib.visualization import *
 
@@ -602,6 +603,10 @@ def get_datasets(config):
         train_set = _4DMatch(config, 'train', data_augmentation=True)
         val_set = _4DMatch(config, 'val', data_augmentation=False)
         test_set = _4DMatch(config, 'test', data_augmentation=False)
+    elif(config.dataset == 'astrivis'):
+        train_set = _Astrivis(config, 'train', data_augmentation=True)
+        val_set = _Astrivis(config, 'val', data_augmentation=False)
+        test_set = _Astrivis(config, 'test', data_augmentation=False)    
     else:
         raise NotImplementedError
 

@@ -217,33 +217,32 @@ class Trainer(object):
 
 
     def train(self):
-        print('start training...')
+        print('Start training...')
         for epoch in range(self.start_epoch, self.max_epoch):
+            print('epoch : ', str(epoch), '/', str(self.max_epoch -1))
+            
             with torch.autograd.set_detect_anomaly(True):
                 if self.timers: self.timers.tic('run one epoch')
                 stats_meter = self.inference_one_epoch(epoch, 'train')
                 if self.timers: self.timers.toc('run one epoch')
-
             self.scheduler.step()
-
 
             if  'overfit' in self.config.exp_dir :
                 if stats_meter['loss'].avg < self.best_loss:
                     self.best_loss = stats_meter['loss'].avg
-                    self._snapshot(epoch, 'best_loss')
-
+                    self.best_epoch = epoch
                 if self.timers: self.timers.print()
-
             else : # no validation step for overfitting
-
                 if self.config.do_valid:
                     stats_meter = self.inference_one_epoch(epoch, 'val')
                     if stats_meter['loss'].avg < self.best_loss:
                         self.best_loss = stats_meter['loss'].avg
-                        self._snapshot(epoch, 'best_loss')
-
-
+                        self.best_epoch = epoch
                 if self.timers: self.timers.print()
+            
+            print('average loss : ',  stats_meter['loss'].avg)
+            print('best loss : ', str(self.best_loss), ' at epoch : ', str(self.best_epoch))
+            self._snapshot(epoch, 'epoch_' + str(epoch))
 
         # finish all epoch
-        print("Training finish!")
+        print("Training finished!")
