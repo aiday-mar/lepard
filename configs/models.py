@@ -22,3 +22,4 @@ kpfcn_backbone = [
 
 architectures['3dmatch'] = kpfcn_backbone
 architectures['4dmatch'] = kpfcn_backbone
+architectures['astrivis'] = kpfcn_backbone
