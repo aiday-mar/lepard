@@ -38,6 +38,8 @@ def knn_point_np(k, reference_pts, query_pts):
     print('query_pts.shape : ', query_pts.shape)
     dist = np.sum((reference_pts - query_pts) ** 2, -1)
     print('dist.shape : ', dist.shape)
+    if dist.shape[1] > N:
+        dist = dist[:, :N]
     idx = partition_arg_topK(dist, K=k, axis=1)
     val = np.take_along_axis ( dist , idx, axis=1)
     return np.sqrt(val), idx
