@@ -22,7 +22,6 @@ class Trainer(object):
         self.save_dir = args.save_dir
         self.device = args.device
         self.verbose = args.verbose
-
         self.model = args.model
         self.model = self.model.to(self.device)
 

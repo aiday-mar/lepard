@@ -3,6 +3,7 @@ from easydict import EasyDict as edict
 import yaml
 from datasets.dataloader import get_dataloader, get_datasets
 from models.pipeline import Pipeline
+from models.pipeline_fcgf import PipelineFCGF
 from lib.utils import setup_seed
 from lib.tester import get_trainer
 from models.loss import MatchMotionLoss
@@ -57,9 +58,13 @@ if __name__ == '__main__':
     
     # model initialization
     config.kpfcn_config.architecture = architectures[config.dataset]
-    config.model = Pipeline(config)
-    # config.model = KPFCNN(config)
-
+    if config.feature_extractor == 'kpfcn':
+        config.model = Pipeline(config)
+    elif config.feature_extractor == 'fcgf':
+        config.model = PipelineFCGF(config)
+    else:
+        raise Exception('Feature Extractor not specified!')
+    
     # create optimizer 
     if config.optimizer == 'SGD':
         config.optimizer = optim.SGD(

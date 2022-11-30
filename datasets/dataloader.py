@@ -6,6 +6,7 @@ import cpp_wrappers.cpp_neighbors.radius_neighbors as cpp_neighbors
 from datasets._3dmatch import _3DMatch
 from datasets._4dmatch import _4DMatch
 from datasets._astrivis import _Astrivis
+from datasets._astrivis_fcgf import _AstrivisFCGF
 from datasets.utils import blend_scene_flow, multual_nn_correspondence
 from lib.visualization import *
 
@@ -305,7 +306,7 @@ def collate_fn_3dmatch(list_data, config, neighborhood_limits ):
         'batched_rot': batched_rot,
         'batched_trn': batched_trn,
         'gt_cov': gt_cov_list,
-        #for refine
+        # for refine
         'correspondences_list': correspondences_list,
         'fine_ind': fine_ind,
         'fine_pts': fine_pts,
@@ -572,9 +573,14 @@ def get_datasets(config):
         val_set = _4DMatch(config, 'val', data_augmentation=False)
         test_set = _4DMatch(config, 'test', data_augmentation=False)
     elif(config.dataset == 'astrivis'):
-        train_set = _Astrivis(config, 'train')
-        val_set = _Astrivis(config, 'val')
-        test_set = _Astrivis(config, 'test')    
+        if(config.feature_extractor == 'kpfcn'):
+            train_set = _Astrivis(config, 'train')
+            val_set = _Astrivis(config, 'val')
+            test_set = _Astrivis(config, 'test')
+        else:
+            train_set = _AstrivisFCGF(config, 'train')
+            val_set = _AstrivisFCGF(config, 'val')
+            test_set = _AstrivisFCGF(config, 'test')                
     else:
         raise NotImplementedError
 

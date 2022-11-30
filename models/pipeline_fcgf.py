@@ -1,24 +1,22 @@
 from models.blocks import *
-from models.backbone import KPFCN
+from models.backbone_fcgf import FCGF
 from models.transformer import RepositioningTransformer
 from models.matching import Matching
 from models.procrustes import SoftProcrustesLayer
 
-class Pipeline(nn.Module):
+class PipelineFCGF(nn.Module):
 
     def __init__(self, config):
-        super(Pipeline, self).__init__()
+        super(PipelineFCGF, self).__init__()
         self.config = config
-        self.backbone = KPFCN(config['kpfcn_config'])
+        self.backbone = FCGF(config['kpfcn_config'])
         self.pe_type = config['coarse_transformer']['pe_type']
         self.positioning_type = config['coarse_transformer']['positioning_type']
         self.coarse_transformer = RepositioningTransformer(config['coarse_transformer'])
         self.coarse_matching = Matching(config['coarse_matching'])
         self.soft_procrustes = SoftProcrustesLayer(config['coarse_transformer']['procrustes'])
 
-
-
-    def forward(self, data, timers=None):
+    def forward(self, data,  timers=None):
 
         self.timers = timers
 
@@ -47,9 +45,6 @@ class Pipeline(nn.Module):
 
         return data
 
-
-
-
     def split_feats(self, geo_feats, data):
 
         pcd = data['points'][self.config['kpfcn_config']['coarse_level']]
@@ -60,14 +55,10 @@ class Pipeline(nn.Module):
         tgt_ind_coarse_split = data['tgt_ind_coarse_split']
         src_ind_coarse = data['src_ind_coarse']
         tgt_ind_coarse = data['tgt_ind_coarse']
-        print('src_ind_coarse_split.shape : ', src_ind_coarse_split.shape)
-        print('tgt_ind_coarse_split.shape : ', tgt_ind_coarse_split.shape)
-        print('src_ind_coarse.shape : ', src_ind_coarse.shape)
-        print('tgt_ind_coarse.shape : ', tgt_ind_coarse.shape)
-        
+
         b_size, src_pts_max = src_mask.shape
         tgt_pts_max = tgt_mask.shape[1]
-        print('geo_feats.shape : ', geo_feats.shape)
+
         src_feats = torch.zeros([b_size * src_pts_max, geo_feats.shape[-1]]).type_as(geo_feats)
         tgt_feats = torch.zeros([b_size * tgt_pts_max, geo_feats.shape[-1]]).type_as(geo_feats)
         src_pcd = torch.zeros([b_size * src_pts_max, 3]).type_as(pcd)
