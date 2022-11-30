@@ -1,4 +1,4 @@
-name: lepard
+name: lepard-2
 channels:
   - defaults
 dependencies:
