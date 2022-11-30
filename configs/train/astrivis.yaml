@@ -64,7 +64,7 @@ train_loss:
   match_weight: 1
   match_type: *match_type
   positioning_type: *positioning_type
-#  confidence_threshold : 0.2
+# confidence_threshold : 0.2
   confidence_threshold_metric: 0.1  #confidence_threshold for evaluation
   inlier_thr: 0.04 # 4 cm
   fmr_thr: 0.5
@@ -98,7 +98,7 @@ iter_size: 1
 #dataset:
 dataset: astrivis
 folder: -final
-batch_size: 8
+batch_size: 1
 num_workers: 0
 augment_noise: 0.002
 data_root: /home/aiday.kyzy/code/lepard/4dmatch
