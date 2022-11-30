@@ -50,7 +50,10 @@ def blend_scene_flow (query_loc, reference_loc, reference_flow , knn=3) :
     @return:
         blended_flow:[m,3]
     '''
+    print('reference_flow.shape : ', reference_flow.shape)
+    print('query_loc.shape : ', query_loc.shape)
     dists, idx = knn_point_np (knn, reference_loc, query_loc)
+    print('idx :', idx)
     dists[dists < 1e-10] = 1e-10
     weight = 1.0 / dists
     weight = weight / np.sum(weight, -1, keepdims=True)  # [B,N,3]
