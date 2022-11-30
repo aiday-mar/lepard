@@ -100,14 +100,18 @@ class _Astrivis(Dataset):
         indices_src = correspondences[:, 0]
         indices_tgt = correspondences[:, 1]
         
-        # Added in order to get the s2t flow on the centered tgt and source
         src_pcd_centered = src_pcd - np.mean(src_pcd, axis=0)
         tgt_pcd_centered = tgt_pcd - np.mean(tgt_pcd, axis=0)
         
-        src_flow = np.array([src_pcd_centered[i] for i in indices_src])
-        tgt_flow = np.array([tgt_pcd_centered[i] for i in indices_tgt])
-                
-        s2t_flow = tgt_flow - src_flow
+        s2t_flow = np.zeros(src_pcd.shape)
+        for i in range(len(indices_src)):
+            src_idx = indices_src[i]
+            tgt_idx = indices_tgt[i]
+            s2t_flow[src_idx] = src_pcd_centered[src_idx] - tgt_pcd_centered[tgt_idx]
+        
+        # src_flow = np.array([src_pcd_centered[i] for i in indices_src])
+        # tgt_flow = np.array([tgt_pcd_centered[i] for i in indices_tgt])    
+        # s2t_flow = tgt_flow - src_flow
         
         src_pcd_trans = file_pointers[0] + '_' + file_pointers[2] + '_se4.h5'
         tgt_pcd_trans = file_pointers[1] + '_' + file_pointers[3] + '_se4.h5'
