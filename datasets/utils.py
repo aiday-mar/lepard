@@ -31,17 +31,12 @@ def knn_point_np(k, reference_pts, query_pts):
     '''
 
     N, _ = reference_pts.shape
-    print('N : ', N)
     M, _ = query_pts.shape
     reference_pts = reference_pts.reshape(1, N, -1).repeat(M, axis=0)
-    print('reference_pts.shape : ', reference_pts.shape)
     query_pts = query_pts.reshape(M, 1, -1).repeat(N, axis=1)
-    print('query_pts.shape : ', query_pts.shape)
     dist = np.sum((reference_pts - query_pts) ** 2, -1)
-    print('dist.shape : ', dist.shape)
-    if dist.shape[1] > N:
-        dist = dist[:, :N]
-    print('dist.shape : ', dist.shape)
+    # if dist.shape[1] > N:
+    #    dist = dist[:, :N]
     idx = partition_arg_topK(dist, K=k, axis=1)
     val = np.take_along_axis ( dist , idx, axis=1)
     return np.sqrt(val), idx
@@ -57,11 +52,7 @@ def blend_scene_flow (query_loc, reference_loc, reference_flow , knn=3) :
     @return:
         blended_flow:[m,3]
     '''
-    print('reference_loc.shape : ', reference_loc.shape)
-    print('reference_flow.shape : ', reference_flow.shape)
-    print('query_loc.shape : ', query_loc.shape)
     dists, idx = knn_point_np (knn, reference_loc, query_loc)
-    print('idx :', idx)
     dists[dists < 1e-10] = 1e-10
     weight = 1.0 / dists
     weight = weight / np.sum(weight, -1, keepdims=True)  # [B,N,3]
@@ -73,7 +64,6 @@ def blend_scene_flow (query_loc, reference_loc, reference_flow , knn=3) :
 def multual_nn_correspondence(src_pcd_deformed, tgt_pcd, search_radius=0.3, knn=1):
 
     src_idx = np.arange(src_pcd_deformed.shape[0])
-
     s2t_dists, ref_tgt_idx = knn_point_np (knn, tgt_pcd, src_pcd_deformed)
     s2t_dists, ref_tgt_idx = s2t_dists[:,0], ref_tgt_idx [:, 0]
     valid_distance = s2t_dists < search_radius
@@ -82,9 +72,7 @@ def multual_nn_correspondence(src_pcd_deformed, tgt_pcd, search_radius=0.3, knn=
     _, ref_src_idx = _, ref_src_idx [:, 0]
 
     cycle_src_idx = ref_src_idx [ ref_tgt_idx ]
-
     is_mutual_nn = cycle_src_idx == src_idx
-
     mutual_nn = np.logical_and( is_mutual_nn, valid_distance)
     correspondences = np.stack([src_idx [ mutual_nn ], ref_tgt_idx[mutual_nn] ] , axis=0)
 

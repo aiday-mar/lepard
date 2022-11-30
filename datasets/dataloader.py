@@ -97,13 +97,10 @@ def collate_fn_3dmatch(list_data, config, neighborhood_limits ):
         batched_lengths_list.append(len(src_pcd))
         batched_lengths_list.append(len(tgt_pcd))
 
-
-
         batched_rot.append( torch.from_numpy(rot).float())
         batched_trn.append( torch.from_numpy(trn).float())
 
         gt_cov_list.append(gt_cov)
-
 
     gt_cov_list = None if gt_cov_list[0] is None \
         else np.stack(gt_cov_list, axis=0)
@@ -209,11 +206,7 @@ def collate_fn_3dmatch(list_data, config, neighborhood_limits ):
         r_normal *= 2
         layer += 1
         layer_blocks = []
-
-
-
-
-
+        
     # coarse infomation
     coarse_level = config.coarse_level
     pts_num_coarse = input_batches_len[coarse_level].view(-1, 2)
@@ -263,9 +256,6 @@ def collate_fn_3dmatch(list_data, config, neighborhood_limits ):
         if vis :
             viz_coarse_nn_correspondence_mayavi(c_src_pcd, c_tgt_pcd, coarse_match_gt, scale_factor=0.04)
 
-
-
-
         vis=False # for debug
         if vis :
             pass
@@ -291,13 +281,10 @@ def collate_fn_3dmatch(list_data, config, neighborhood_limits ):
             #                                     f_src_pcd=src_m_nei_pts.view(-1,3)[src_nei_valid],
             #                                     f_tgt_pcd=tgt_m_nei_pts.view(-1,3)[tgt_nei_valid], scale_factor=0.08)
 
-
-
     src_ind_coarse_split = torch.cat(src_ind_coarse_split)
     tgt_ind_coarse_split = torch.cat(tgt_ind_coarse_split)
     src_ind_coarse = torch.cat(src_ind_coarse)
     tgt_ind_coarse = torch.cat(tgt_ind_coarse)
-
 
     dict_inputs = {
         'src_pcd_list': src_pcd_list,
@@ -327,8 +314,6 @@ def collate_fn_3dmatch(list_data, config, neighborhood_limits ):
 
     return dict_inputs
 
-
-
 def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
     batched_points_list = []
     batched_features_list = []
@@ -357,8 +342,6 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
         batched_lengths_list.append(len(src_pcd))
         batched_lengths_list.append(len(tgt_pcd))
 
-
-
         batched_rot.append( torch.from_numpy(rot).float())
         batched_trn.append( torch.from_numpy(trn).float())
 
@@ -369,9 +352,6 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
             metric_index_list = None
         else :
             metric_index_list.append ( torch.from_numpy(metric_index))
-
-
-
 
     # if timers: cnter['collate_load_batch'] = time.time() - st
 
@@ -395,7 +375,6 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
     input_pools = []
     input_upsamples = []
     input_batches_len = []
-
 
     # construt kpfcn inds
     for block_i, block in enumerate(config.architecture):
@@ -475,7 +454,6 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
         layer += 1
         layer_blocks = []
 
-
     # coarse infomation
     coarse_level = config.coarse_level
     pts_num_coarse = input_batches_len[coarse_level].view(-1, 2)
@@ -492,7 +470,6 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
     src_mask = torch.zeros([b_size, src_pts_max], dtype=torch.bool)
     tgt_mask = torch.zeros([b_size, tgt_pts_max], dtype=torch.bool)
 
-
     for entry_id, cnt in enumerate( pts_num_coarse ): #input_batches_len[-1].numpy().reshape(-1,2)) :
 
         n_s_pts, n_t_pts = cnt
@@ -501,13 +478,11 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
         src_mask[entry_id][:n_s_pts] = 1
         tgt_mask[entry_id][:n_t_pts] = 1
 
-
         '''split indices of bottleneck feats'''
         src_ind_coarse_split.append( torch.arange( n_s_pts ) + entry_id * src_pts_max )
         tgt_ind_coarse_split.append( torch.arange( n_t_pts ) + entry_id * tgt_pts_max )
         src_ind_coarse.append( torch.arange( n_s_pts ) + accumu )
         tgt_ind_coarse.append( torch.arange( n_t_pts ) + accumu + n_s_pts )
-
 
         '''get match at coarse level'''
         c_src_pcd_np = coarse_pcd[accumu : accumu + n_s_pts].numpy()
@@ -527,12 +502,10 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
         if vis :
             viz_coarse_nn_correspondence_mayavi(c_src_pcd_np, c_tgt_pcd_np, coarse_match_gt, scale_factor=0.02)
 
-
     src_ind_coarse_split = torch.cat(src_ind_coarse_split)
     tgt_ind_coarse_split = torch.cat(tgt_ind_coarse_split)
     src_ind_coarse = torch.cat(src_ind_coarse)
     tgt_ind_coarse = torch.cat(tgt_ind_coarse)
-
 
     dict_inputs = {
         'src_pcd_list': src_pcd_list,
@@ -558,8 +531,6 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
     }
 
     return dict_inputs
-
-
 
 def calibrate_neighbors(dataset, config, collate_fn, keep_ratio=0.8, samples_threshold=2000):
 
@@ -591,9 +562,6 @@ def calibrate_neighbors(dataset, config, collate_fn, keep_ratio=0.8, samples_thr
 
     return neighborhood_limits
 
-
-
-
 def get_datasets(config):
     if (config.dataset == '3dmatch'):
         train_set = _3DMatch(config, 'train', data_augmentation=True)
@@ -611,8 +579,6 @@ def get_datasets(config):
         raise NotImplementedError
 
     return train_set, val_set, test_set
-
-
 
 def get_dataloader(dataset, config, shuffle=True, neighborhood_limits=None):
 
@@ -640,10 +606,5 @@ def get_dataloader(dataset, config, shuffle=True, neighborhood_limits=None):
 
     return dataloader, neighborhood_limits
 
-
-
-
 if __name__ == '__main__':
-
-
     pass

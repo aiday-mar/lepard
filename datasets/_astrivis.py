@@ -108,11 +108,7 @@ class _Astrivis(Dataset):
             src_idx = indices_src[i]
             tgt_idx = indices_tgt[i]
             s2t_flow[src_idx] = src_pcd_centered[src_idx] - tgt_pcd_centered[tgt_idx]
-        
-        # src_flow = np.array([src_pcd_centered[i] for i in indices_src])
-        # tgt_flow = np.array([tgt_pcd_centered[i] for i in indices_tgt])    
-        # s2t_flow = tgt_flow - src_flow
-        
+                
         src_pcd_trans = file_pointers[0] + '_' + file_pointers[2] + '_se4.h5'
         tgt_pcd_trans = file_pointers[1] + '_' + file_pointers[3] + '_se4.h5'
         
