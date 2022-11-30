@@ -19,7 +19,7 @@ class _Astrivis(Dataset):
         self.number_matches = 0
         self.n_files_per_folder = 0
         self.config = config
-        
+        self.folders = np.linspace(0, 225, num=160)
         n_files_per_folder_found = False
         
         path = ''
@@ -54,7 +54,7 @@ class _Astrivis(Dataset):
         folder_number = index // self.n_files_per_folder
         idx_inside_folder = index % self.n_files_per_folder
                 
-        folder_string = 'model' + str(folder_number).zfill(3)
+        folder_string = 'model' + str(self.folders[folder_number]).zfill(3)
         files_array = self.matches[folder_string]
         filename = files_array[idx_inside_folder]
                 
