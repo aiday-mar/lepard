@@ -31,6 +31,7 @@ def knn_point_np(k, reference_pts, query_pts):
     '''
 
     N, _ = reference_pts.shape
+    print('N : ', N)
     M, _ = query_pts.shape
     reference_pts = reference_pts.reshape(1, N, -1).repeat(M, axis=0)
     print('reference_pts.shape : ', reference_pts.shape)
@@ -56,6 +57,7 @@ def blend_scene_flow (query_loc, reference_loc, reference_flow , knn=3) :
     @return:
         blended_flow:[m,3]
     '''
+    print('reference_loc.shape : ', reference_loc.shape)
     print('reference_flow.shape : ', reference_flow.shape)
     print('query_loc.shape : ', query_loc.shape)
     dists, idx = knn_point_np (knn, reference_loc, query_loc)
