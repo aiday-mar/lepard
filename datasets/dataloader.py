@@ -504,7 +504,7 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
             src_ind_coarse_split = torch.arange(n_src_feats)
             tgt_ind_coarse_split = torch.arange(n_tgt_feats)                         
             src_ind_coarse = torch.arange(n_src_feats)
-            tgt_ind_coarse = torch.arange(n_tgt_feats + n_src_feats)
+            tgt_ind_coarse = torch.arange(n_src_feats, n_tgt_feats + n_src_feats)
             src_mask = torch.zeros([b_size, n_src_feats], dtype=torch.bool)
             src_mask[0][:n_src_feats] = 1
             tgt_mask = torch.zeros([b_size, n_tgt_feats], dtype=torch.bool)
