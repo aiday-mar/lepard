@@ -521,7 +521,7 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
             tgt_coarse = tgt_pcd[tgt_feats_indices]
             total_points = np.concatenate((src_coarse, tgt_coarse))
             print('total_points.shape : ', total_points.shape)
-            input_points[coarse_level] = total_points
+            input_points[coarse_level] = torch.tensor(total_points)
             input_batches_len[coarse_level] = torch.tensor([src_feats_indices.shape[0], tgt_feats_indices.shape[0]], dtype=torch.int32)
             # dists = np.zeros((total_points.shape[0], total_points.shape[0]))
             inter = total_points.reshape(total_points.shape[0], 1, total_points.shape[1])
