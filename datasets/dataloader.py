@@ -471,50 +471,60 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
     tgt_ind_coarse = []
     accumu = 0
 
-    # if feature_extractor == 'kpfcn':
-    src_mask = torch.zeros([b_size, src_pts_max], dtype=torch.bool)
-    tgt_mask = torch.zeros([b_size, tgt_pts_max], dtype=torch.bool)
+    if feature_extractor == 'kpfcn':
+        src_mask = torch.zeros([b_size, src_pts_max], dtype=torch.bool)
+        tgt_mask = torch.zeros([b_size, tgt_pts_max], dtype=torch.bool)
 
-    print('pts_num_coarse.shape : ', pts_num_coarse.shape)
-    for entry_id, cnt in enumerate( pts_num_coarse ): #input_batches_len[-1].numpy().reshape(-1,2)) :
+        print('pts_num_coarse.shape : ', pts_num_coarse.shape)
+        for entry_id, cnt in enumerate( pts_num_coarse ): #input_batches_len[-1].numpy().reshape(-1,2)) :
 
-        n_s_pts, n_t_pts = cnt
+            n_s_pts, n_t_pts = cnt
 
-        '''split mask for bottlenect feats'''
-        src_mask[entry_id][:n_s_pts] = 1
-        tgt_mask[entry_id][:n_t_pts] = 1
+            '''split mask for bottlenect feats'''
+            src_mask[entry_id][:n_s_pts] = 1
+            tgt_mask[entry_id][:n_t_pts] = 1
 
-        '''split indices of bottleneck feats'''
-        src_ind_coarse_split.append( torch.arange( n_s_pts ) + entry_id * src_pts_max )
-        tgt_ind_coarse_split.append( torch.arange( n_t_pts ) + entry_id * tgt_pts_max )
-        src_ind_coarse.append( torch.arange( n_s_pts ) + accumu )
-        tgt_ind_coarse.append( torch.arange( n_t_pts ) + accumu + n_s_pts )
+            '''split indices of bottleneck feats'''
+            src_ind_coarse_split.append( torch.arange( n_s_pts ) + entry_id * src_pts_max )
+            tgt_ind_coarse_split.append( torch.arange( n_t_pts ) + entry_id * tgt_pts_max )
+            src_ind_coarse.append( torch.arange( n_s_pts ) + accumu )
+            tgt_ind_coarse.append( torch.arange( n_t_pts ) + accumu + n_s_pts )
 
-        '''get match at coarse level'''
-        c_src_pcd_np = coarse_pcd[accumu : accumu + n_s_pts].numpy()
-        c_tgt_pcd_np = coarse_pcd[accumu + n_s_pts: accumu + n_s_pts + n_t_pts].numpy()
-        #interpolate flow
-        f_src_pcd = batched_points_list[entry_id * 2]
-        c_flow = blend_scene_flow( c_src_pcd_np, f_src_pcd, sflow_list[entry_id].numpy(), knn=3)
-        c_src_pcd_deformed = c_src_pcd_np + c_flow
-        s_pc_wrapped = (np.matmul( batched_rot[entry_id].numpy(), c_src_pcd_deformed.T ) + batched_trn [entry_id].numpy()).T
-        coarse_match_gt = torch.from_numpy( multual_nn_correspondence(s_pc_wrapped , c_tgt_pcd_np , search_radius=config['coarse_match_radius'])  )# 0.1m scaled
-        coarse_matches.append(coarse_match_gt)
-        coarse_flow.append(torch.from_numpy(c_flow) )
+            '''get match at coarse level'''
+            c_src_pcd_np = coarse_pcd[accumu : accumu + n_s_pts].numpy()
+            c_tgt_pcd_np = coarse_pcd[accumu + n_s_pts: accumu + n_s_pts + n_t_pts].numpy()
+            #interpolate flow
+            f_src_pcd = batched_points_list[entry_id * 2]
+            c_flow = blend_scene_flow( c_src_pcd_np, f_src_pcd, sflow_list[entry_id].numpy(), knn=3)
+            c_src_pcd_deformed = c_src_pcd_np + c_flow
+            s_pc_wrapped = (np.matmul( batched_rot[entry_id].numpy(), c_src_pcd_deformed.T ) + batched_trn [entry_id].numpy()).T
+            coarse_match_gt = torch.from_numpy( multual_nn_correspondence(s_pc_wrapped , c_tgt_pcd_np , search_radius=config['coarse_match_radius'])  )# 0.1m scaled
+            coarse_matches.append(coarse_match_gt)
+            coarse_flow.append(torch.from_numpy(c_flow) )
 
-        accumu = accumu + n_s_pts + n_t_pts
-        vis=False # for debug
-        
-        if vis :
-            viz_coarse_nn_correspondence_mayavi(c_src_pcd_np, c_tgt_pcd_np, coarse_match_gt, scale_factor=0.02)
-
-    # elif feature_extractor == 'fcgf':
-    #    for ind, ( src_pcd, tgt_pcd, src_feats, tgt_feats, correspondences, rot, trn, s2t_flow, metric_index) in enumerate(list_data):
+            accumu = accumu + n_s_pts + n_t_pts
+            vis=False # for debug
+            
+            if vis :
+                viz_coarse_nn_correspondence_mayavi(c_src_pcd_np, c_tgt_pcd_np, coarse_match_gt, scale_factor=0.02)
                 
-    src_ind_coarse_split = torch.cat(src_ind_coarse_split)
-    tgt_ind_coarse_split = torch.cat(tgt_ind_coarse_split)
-    src_ind_coarse = torch.cat(src_ind_coarse)
-    tgt_ind_coarse = torch.cat(tgt_ind_coarse)
+            src_ind_coarse_split = torch.cat(src_ind_coarse_split)
+            tgt_ind_coarse_split = torch.cat(tgt_ind_coarse_split)
+            src_ind_coarse = torch.cat(src_ind_coarse)
+            tgt_ind_coarse = torch.cat(tgt_ind_coarse)
+    
+    elif feature_extractor == 'fcgf':
+        for ind, ( src_pcd, tgt_pcd, src_feats, tgt_feats, correspondences, rot, trn, s2t_flow, metric_index) in enumerate(list_data):
+            n_src_feats = src_feats.shape[0]
+            n_tgt_feats = tgt_feats.shape[0]
+            src_ind_coarse_split = torch.arange(n_src_feats)
+            tgt_ind_coarse_split = torch.arange(n_tgt_feats)                         
+            src_ind_coarse = torch.arange(n_src_feats)
+            tgt_ind_coarse = torch.arange(n_tgt_feats + n_src_feats)
+            src_mask = torch.zeros([b_size, n_src_feats], dtype=torch.bool)
+            src_mask[0][:n_src_feats] = 1
+            tgt_mask = torch.zeros([b_size, n_tgt_feats], dtype=torch.bool)
+            tgt_mask[0][:n_tgt_feats] = 1
     
     print('feature_extractor : ', feature_extractor)
     print('src_ind_coarse_split.shape : ', src_ind_coarse_split.shape)
