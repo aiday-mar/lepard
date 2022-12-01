@@ -19,6 +19,8 @@ class PipelineFCGF(nn.Module):
 
     def forward(self, data,  timers=None):
 
+        print('\n')
+        print('Inside of forward method of PipelineFCGF')
         self.timers = timers
 
         if self.timers: self.timers.tic('kpfcn backbone encode')
@@ -48,15 +50,23 @@ class PipelineFCGF(nn.Module):
 
     def split_feats(self, geo_feats, data):
 
+        print('\n')
+        print('Inside of forward method of PipelineFCGF')
+        print('geo_feats.shape : ', geo_feats.shape)
         pcd = data['points'][self.config['kpfcn_config']['coarse_level']]
 
         src_mask = data['src_mask']
         tgt_mask = data['tgt_mask']
-        src_ind_coarse_split = data[ 'src_ind_coarse_split']
+        print('src_mask.shape : ', src_mask.shape)
+        print('tgt_mask.shape : ', tgt_mask.shape)
+        src_ind_coarse_split = data['src_ind_coarse_split']
         tgt_ind_coarse_split = data['tgt_ind_coarse_split']
+        print('src_ind_coarse_split.shape : ', src_ind_coarse_split.shape)
+        print('tgt_ind_coarse_split.shape : ', tgt_ind_coarse_split.shape)
         src_ind_coarse = data['src_ind_coarse']
         tgt_ind_coarse = data['tgt_ind_coarse']
-
+        print('src_ind_coarse.shape : ', src_ind_coarse.shape)
+        print('tgt_ind_coarse.shape : ', tgt_ind_coarse.shape)
         b_size, src_pts_max = src_mask.shape
         tgt_pts_max = tgt_mask.shape[1]
 
