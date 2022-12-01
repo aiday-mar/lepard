@@ -557,6 +557,7 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
     print('input_points[coarse_level].shape : ', input_points[coarse_level].shape)
     print('len(input_neighbors) : ', len(input_neighbors))
     print('input_neighbors[coarse_level].shape : ', input_neighbors[coarse_level].shape)
+    print('input_neighbors[coarse_level] : ', input_neighbors[coarse_level])
     print('len(input_pools) : ', len(input_pools))
     print('input_pools[coarse_level].shape : ', input_pools[coarse_level].shape)
     print('len(input_upsamples) : ', len(input_upsamples))

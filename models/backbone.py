@@ -138,7 +138,6 @@ class KPFCN(nn.Module):
                     return coarse_feats #[N,C2]
 
         # elif phase == "fine":
-        #
         #     coarse_feats = batch['coarse_feats']
         #     coarse_feats = coarse_feats.transpose(0,1).unsqueeze(0)
         #     coarse_feats = self.coarse_in(coarse_feats)
@@ -153,5 +152,4 @@ class KPFCN(nn.Module):
         #     fine_feats = x.transpose(0, 1).unsqueeze(0)  # [1, C, N]
         #     fine_feats = self.fine_out(fine_feats)  # [1, C, N]
         #     fine_feats = fine_feats.transpose(1, 2).squeeze(0)
-        #
         #     return fine_feats
