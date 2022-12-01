@@ -507,7 +507,7 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
         
         if vis :
             viz_coarse_nn_correspondence_mayavi(c_src_pcd_np, c_tgt_pcd_np, coarse_match_gt, scale_factor=0.02)
-    
+
     # elif feature_extractor == 'fcgf':
     #    for ind, ( src_pcd, tgt_pcd, src_feats, tgt_feats, correspondences, rot, trn, s2t_flow, metric_index) in enumerate(list_data):
                 
@@ -529,6 +529,7 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
     print('src_mask : ', src_mask)
     print('tgt_mask.shape : ', tgt_mask.shape)
     print('tgt_mask : ', tgt_mask)
+    print('batched_features.float().shape : ', batched_features.float().shape)
     
     dict_inputs = {
         'src_pcd_list': src_pcd_list,
