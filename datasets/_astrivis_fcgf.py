@@ -97,8 +97,8 @@ class _AstrivisFCGF(Dataset):
         
         src_feats_data = np.load(self.path + folder_string + '/transformed/' + src_pcd_fcgf)
         tgt_feats_data = np.load(self.path + folder_string + '/transformed/' + tgt_pcd_fcgf)
-        src_feats = src_feats_data['decriptors']
-        tgt_feats = tgt_feats_data['decriptors']
+        src_feats = src_feats_data['descriptors']
+        tgt_feats = tgt_feats_data['descriptors']
         src_feats_indices = src_feats_data['indices']
         tgt_feats_indices = tgt_feats_data['indices']
         print('src_feats.shape : ', src_feats.shape)
