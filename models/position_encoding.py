@@ -30,7 +30,9 @@ class VolumetricPositionEncoding(nn.Module):
         @param sin: [B,N,d]  [θ0,θ0,θ1,θ1,θ2,θ2......θd/2-1,θd/2-1]
         @return:
         '''
+        print('x.shape : ', x.shape)
         x2 = torch.stack([-x[..., 1::2], x[..., ::2]], dim=-1).reshape_as(x).contiguous()
+        print('x2.shape : ', x2.shape)
         x = x * cos + x2 * sin
         return x
 
