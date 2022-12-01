@@ -58,6 +58,7 @@ if __name__ == '__main__':
     
     # model initialization
     config.kpfcn_config.architecture = architectures[config.dataset]
+    print('config.feature_extractor : ', config.feature_extractor)
     if config.feature_extractor == 'kpfcn':
         config.model = Pipeline(config)
     elif config.feature_extractor == 'fcgf':
