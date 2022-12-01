@@ -316,7 +316,8 @@ def collate_fn_3dmatch(list_data, config, neighborhood_limits ):
     return dict_inputs
 
 def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor = 'kpfcn'):
-    
+    print('\n')
+    print('Inside of collate_fn_4dmatch')
     print('feature_extractor : ', feature_extractor)
     batched_points_list = []
     batched_features_list = []
@@ -651,7 +652,7 @@ def get_datasets(config):
             train_set = _Astrivis(config, 'train')
             val_set = _Astrivis(config, 'val')
             test_set = _Astrivis(config, 'test')
-        else:
+        if(config.feature_extractor == 'fcgf'):
             train_set = _AstrivisFCGF(config, 'train')
             val_set = _AstrivisFCGF(config, 'val')
             test_set = _AstrivisFCGF(config, 'test')                
@@ -673,6 +674,8 @@ def get_dataloader(dataset, config, shuffle=True, neighborhood_limits=None, feat
 
     if neighborhood_limits is None:
         neighborhood_limits = calibrate_neighbors(dataset, config['kpfcn_config'], collate_fn=collate_fn)
+    print('\n')
+    print('Inside of get_dataloader')
     print("neighborhood:", neighborhood_limits)
     print('feature_extractor : ', feature_extractor)
     
