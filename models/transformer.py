@@ -58,7 +58,7 @@ class GeometryAttentionLayer(nn.Module):
 
         elif self.pe_type == 'rotary':
             #Rwx roformer : https://arxiv.org/abs/2104.09864
-
+            q = q.double()
             qw = self.q_proj(q)
             kw = self.k_proj(k)
             vw = self.v_proj(v)
