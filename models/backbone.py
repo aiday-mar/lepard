@@ -141,7 +141,6 @@ class KPFCN(nn.Module):
 
                     return coarse_feats #[N,C2]
 
-        #
         # elif phase == "fine":
         #
         #     coarse_feats = batch['coarse_feats']
