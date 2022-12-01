@@ -555,6 +555,7 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
     print('input_upsamples[coarse_level].shape : ', input_upsamples[coarse_level].shape)
     print('len(input_batches_len) : ', len(input_batches_len))
     print('input_batches_len[coarse_level].shape : ', input_batches_len[coarse_level].shape)
+    print('input_batches_len[coarse_level] : ', input_batches_len[coarse_level])
     print('len(coarse_matches) : ', len(coarse_matches))
     print('coarse_matches[0].shape : ', coarse_matches[0].shape)
     print('len(coarse_flow) : ', len(coarse_flow))
