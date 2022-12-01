@@ -52,7 +52,7 @@ class VolumetricPositionEncoding(nn.Module):
             raise KeyError()
 
 
-    def forward(self,  XYZ):
+    def forward(self,  XYZ, feature_extractor = 'kpfcn'):
         '''
         @param XYZ: [B,N,3]
         @return:
@@ -68,6 +68,7 @@ class VolumetricPositionEncoding(nn.Module):
         print('z_position.shape : ', z_position.shape)
         div_term = torch.exp( torch.arange(0, self.feature_dim // 3, 2, dtype=torch.float, device=XYZ.device) *  (-math.log(10000.0) / (self.feature_dim // 3)))
         div_term = div_term.view( 1,1, -1) # [1, 1, d//6]
+        print('feature_extractor : ', feature_extractor)
         print('div_term.shape : ', div_term.shape)
         
         sinx = torch.sin(x_position * div_term) # [B, N, d//6]

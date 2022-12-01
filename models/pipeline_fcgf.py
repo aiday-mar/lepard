@@ -9,6 +9,7 @@ class PipelineFCGF(nn.Module):
     def __init__(self, config):
         super(PipelineFCGF, self).__init__()
         self.config = config
+        self.feature_extactor = config.feature_extractor
         self.backbone = FCGF(config['kpfcn_config'])
         self.pe_type = config['coarse_transformer']['pe_type']
         self.positioning_type = config['coarse_transformer']['positioning_type']
@@ -30,7 +31,7 @@ class PipelineFCGF(nn.Module):
         if self.timers: self.timers.toc('coarse_preprocess')
 
         if self.timers: self.timers.tic('coarse feature transformer')
-        src_feats, tgt_feats, src_pe, tgt_pe = self.coarse_transformer(src_feats, tgt_feats, s_pcd, t_pcd, src_mask, tgt_mask, data, timers=timers)
+        src_feats, tgt_feats, src_pe, tgt_pe = self.coarse_transformer(src_feats, tgt_feats, s_pcd, t_pcd, src_mask, tgt_mask, data, timers=timers, feature_extractor = self.feature_extractor)
         if self.timers: self.timers.toc('coarse feature transformer')
 
         if self.timers: self.timers.tic('match feature coarse')

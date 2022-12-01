@@ -95,11 +95,6 @@ class GeometryAttentionLayer(nn.Module):
 
         return e
 
-
-
-
-
-
 class RepositioningTransformer(nn.Module):
 
     def __init__(self, config):
@@ -148,7 +143,7 @@ class RepositioningTransformer(nn.Module):
 
 
 
-    def forward(self, src_feat, tgt_feat, s_pcd, t_pcd, src_mask, tgt_mask, data, T = None, timers = None):
+    def forward(self, src_feat, tgt_feat, s_pcd, t_pcd, src_mask, tgt_mask, data, T = None, timers = None, feature_extractor = 'kpfcn'):
 
         print('Inside forward of repositioning transformer')
         self.timers = timers
@@ -163,8 +158,8 @@ class RepositioningTransformer(nn.Module):
             src_pcd_wrapped = s_pcd
             tgt_pcd_wrapped = t_pcd
 
-        src_pe = self.positional_encoding( src_pcd_wrapped)
-        tgt_pe = self.positional_encoding( tgt_pcd_wrapped)
+        src_pe = self.positional_encoding( src_pcd_wrapped, feature_extractor)
+        tgt_pe = self.positional_encoding( tgt_pcd_wrapped, feature_extractor)
 
 
         if not self.entangled:
