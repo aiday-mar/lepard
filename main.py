@@ -101,9 +101,9 @@ if __name__ == '__main__':
 
     # create dataset and dataloader
     train_set, val_set, test_set = get_datasets(config)
-    config.train_loader, neighborhood_limits = get_dataloader(train_set,config,shuffle=True)
-    config.val_loader, _ = get_dataloader(val_set, config, shuffle=False, neighborhood_limits=neighborhood_limits)
-    config.test_loader, _ = get_dataloader(test_set, config, shuffle=False, neighborhood_limits=neighborhood_limits)
+    config.train_loader, neighborhood_limits = get_dataloader(train_set,config,shuffle=True, feature_extractor = config.feature_extractor)
+    config.val_loader, _ = get_dataloader(val_set, config, shuffle=False, neighborhood_limits=neighborhood_limits, feature_extractor = config.feature_extractor)
+    config.test_loader, _ = get_dataloader(test_set, config, shuffle=False, neighborhood_limits=neighborhood_limits, feature_extractor = config.feature_extractor)
     
     # config.desc_loss = MetricLoss(config)
     config.desc_loss = MatchMotionLoss (config['train_loss'])

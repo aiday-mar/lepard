@@ -99,6 +99,8 @@ class _AstrivisFCGF(Dataset):
         tgt_feats = np.load(self.path + folder_string + '/transformed/' + tgt_pcd_fcgf)
         src_feats = src_feats['arr_0']
         tgt_feats = tgt_feats['arr_0']
+        print('src_feats.shape : ', src_feats.shape)
+        print('tgt_feats.shape : ', tgt_feats.shape)
                 
         matches = np.load(self.path + folder_string + '/matches/' + filename)
         correspondences = np.array(matches['matches'])

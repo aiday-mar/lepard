@@ -315,7 +315,7 @@ def collate_fn_3dmatch(list_data, config, neighborhood_limits ):
 
     return dict_inputs
 
-def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
+def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor = 'kpfcn'):
     batched_points_list = []
     batched_features_list = []
     batched_lengths_list = []
@@ -352,7 +352,7 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
         if metric_index is None:
             metric_index_list = None
         else :
-            metric_index_list.append ( torch.from_numpy(metric_index))
+            metric_index_list.append(torch.from_numpy(metric_index))
 
     # if timers: cnter['collate_load_batch'] = time.time() - st
 
@@ -468,6 +468,8 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
     tgt_ind_coarse_split= []
     tgt_ind_coarse = []
     accumu = 0
+
+    # if feature_extractor == 'kpfcn':
     src_mask = torch.zeros([b_size, src_pts_max], dtype=torch.bool)
     tgt_mask = torch.zeros([b_size, tgt_pts_max], dtype=torch.bool)
 
@@ -498,16 +500,27 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits ):
         coarse_flow.append(torch.from_numpy(c_flow) )
 
         accumu = accumu + n_s_pts + n_t_pts
-
         vis=False # for debug
+        
         if vis :
             viz_coarse_nn_correspondence_mayavi(c_src_pcd_np, c_tgt_pcd_np, coarse_match_gt, scale_factor=0.02)
-
+    
+    # elif feature_extractor == 'fcgf':
+    #    for ind, ( src_pcd, tgt_pcd, src_feats, tgt_feats, correspondences, rot, trn, s2t_flow, metric_index) in enumerate(list_data):
+                
     src_ind_coarse_split = torch.cat(src_ind_coarse_split)
     tgt_ind_coarse_split = torch.cat(tgt_ind_coarse_split)
     src_ind_coarse = torch.cat(src_ind_coarse)
     tgt_ind_coarse = torch.cat(tgt_ind_coarse)
-
+    
+    print('feature_extractor.shape : ', feature_extractor.shape)
+    print('src_ind_coarse_split.shape : ', src_ind_coarse_split.shape)
+    print('tgt_ind_coarse_split.shape : ', tgt_ind_coarse_split.shape)
+    print('src_ind_coarse.shape : ', src_ind_coarse.shape)
+    print('tgt_ind_coarse.shape : ', tgt_ind_coarse.shape)
+    print('src_mask.shape : ', src_mask.shape)
+    print('tgt_mask.shape : ', tgt_mask.shape)
+    
     dict_inputs = {
         'src_pcd_list': src_pcd_list,
         'tgt_pcd_list': tgt_pcd_list,
@@ -586,7 +599,7 @@ def get_datasets(config):
 
     return train_set, val_set, test_set
 
-def get_dataloader(dataset, config, shuffle=True, neighborhood_limits=None):
+def get_dataloader(dataset, config, shuffle=True, neighborhood_limits=None, feature_extractor = 'kpfcn'):
 
     if config.dataset=='4dmatch':
         collate_fn = collate_fn_4dmatch
@@ -606,7 +619,7 @@ def get_dataloader(dataset, config, shuffle=True, neighborhood_limits=None):
         batch_size=config['batch_size'],
         shuffle=shuffle,
         num_workers=config['num_workers'],
-        collate_fn=partial(collate_fn, config=config['kpfcn_config'], neighborhood_limits=neighborhood_limits ),
+        collate_fn=partial(collate_fn, config=config['kpfcn_config'], neighborhood_limits=neighborhood_limits, feature_extractor = feature_extractor),
         drop_last=False
     )
 
