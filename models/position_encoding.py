@@ -70,14 +70,23 @@ class VolumetricPositionEncoding(nn.Module):
         div_term = div_term.view( 1,1, -1) # [1, 1, d//6]
         print('feature_extractor : ', feature_extractor)
         print('div_term.shape : ', div_term.shape)
-        
-        sinx = torch.sin(x_position * div_term) # [B, N, d//6]
-        print('sinx.shape : ', sinx.shape)
-        cosx = torch.cos(x_position * div_term)
-        siny = torch.sin(y_position * div_term)
-        cosy = torch.cos(y_position * div_term)
-        sinz = torch.sin(z_position * div_term)
-        cosz = torch.cos(z_position * div_term)
+        if feature_extractor == 'fcgf':
+            sinx = torch.sin(x_position * div_term) # [B, N, d//6]
+            cosx = torch.cos(x_position * div_term)
+            siny = torch.sin(y_position * div_term)
+            cosy = torch.cos(y_position * div_term)
+            div_term = torch.exp( torch.arange(0, self.feature_dim // 3 + 1, 2, dtype=torch.float, device=XYZ.device) *  (-math.log(10000.0) / (self.feature_dim // 3)))
+            div_term = div_term.view( 1,1, -1) # [1, 1, d//6]
+            print('div_term.shape : ', div_term.shape)
+            sinz = torch.sin(z_position * div_term)
+            cosz = torch.cos(z_position * div_term)
+        elif feature_extractor == 'kpfcn':
+            sinx = torch.sin(x_position * div_term) # [B, N, d//6]
+            cosx = torch.cos(x_position * div_term)
+            siny = torch.sin(y_position * div_term)
+            cosy = torch.cos(y_position * div_term)
+            sinz = torch.sin(z_position * div_term)
+            cosz = torch.cos(z_position * div_term)
 
         if self.pe_type == 'sinusoidal' :
             print('Entered into sinusoidal encoding')
