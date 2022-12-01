@@ -513,7 +513,7 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
     src_ind_coarse = torch.cat(src_ind_coarse)
     tgt_ind_coarse = torch.cat(tgt_ind_coarse)
     
-    print('feature_extractor.shape : ', feature_extractor.shape)
+    print('feature_extractor : ', feature_extractor)
     print('src_ind_coarse_split.shape : ', src_ind_coarse_split.shape)
     print('tgt_ind_coarse_split.shape : ', tgt_ind_coarse_split.shape)
     print('src_ind_coarse.shape : ', src_ind_coarse.shape)
