@@ -316,6 +316,8 @@ def collate_fn_3dmatch(list_data, config, neighborhood_limits ):
     return dict_inputs
 
 def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor = 'kpfcn'):
+    
+    print('feature_extractor : ', feature_extractor)
     batched_points_list = []
     batched_features_list = []
     batched_lengths_list = []
@@ -543,7 +545,6 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
             coarse_flow.append(torch.from_numpy(c_flow))
             sflow_list.append( torch.from_numpy(s2t_flow).float())
     
-    print('feature_extractor : ', feature_extractor)
     print('src_ind_coarse_split.shape : ', src_ind_coarse_split.shape)
     print('src_ind_coarse_split : ', src_ind_coarse_split)
     print('tgt_ind_coarse_split.shape : ', tgt_ind_coarse_split.shape)
@@ -673,7 +674,8 @@ def get_dataloader(dataset, config, shuffle=True, neighborhood_limits=None, feat
     if neighborhood_limits is None:
         neighborhood_limits = calibrate_neighbors(dataset, config['kpfcn_config'], collate_fn=collate_fn)
     print("neighborhood:", neighborhood_limits)
-
+    print('feature_extractor : ', feature_extractor)
+    
     dataloader = torch.utils.data.DataLoader(
         dataset,
         batch_size=config['batch_size'],
