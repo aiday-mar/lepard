@@ -516,11 +516,17 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
     
     print('feature_extractor : ', feature_extractor)
     print('src_ind_coarse_split.shape : ', src_ind_coarse_split.shape)
+    print('src_ind_coarse_split : ', src_ind_coarse_split)
     print('tgt_ind_coarse_split.shape : ', tgt_ind_coarse_split.shape)
+    print('tgt_ind_coarse_split : ', tgt_ind_coarse_split)
     print('src_ind_coarse.shape : ', src_ind_coarse.shape)
+    print('src_ind_coarse : ', src_ind_coarse)
     print('tgt_ind_coarse.shape : ', tgt_ind_coarse.shape)
+    print('tgt_ind_coarse : ', tgt_ind_coarse)
     print('src_mask.shape : ', src_mask.shape)
+    print('src_mask : ', src_mask)
     print('tgt_mask.shape : ', tgt_mask.shape)
+    print('tgt_mask : ', tgt_mask)
     
     dict_inputs = {
         'src_pcd_list': src_pcd_list,
