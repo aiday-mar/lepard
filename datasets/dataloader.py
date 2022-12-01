@@ -610,10 +610,16 @@ def calibrate_neighbors(dataset, config, collate_fn, keep_ratio=0.8, samples_thr
         batched_input = collate_fn([dataset[i]], config, neighborhood_limits=[hist_n] * 5, feature_extractor = feature_extractor)
 
         # update histogram
-        counts = [torch.sum(neighb_mat < neighb_mat.shape[0], dim=1).numpy() for neighb_mat in batched_input['neighbors']]
+        if feature_extractor == 'kpfcn':
+            counts = [torch.sum(neighb_mat < neighb_mat.shape[0], dim=1).numpy() for neighb_mat in batched_input['neighbors']]
+        elif feature_extractor == 'fcgf':
+            neighb_mat = batched_input['neighbors'][config.coarse_level]
+            counts = [torch.sum(neighb_mat < neighb_mat.shape[0], dim=1).numpy()]
+        else:
+            raise Exception('Choose valid feature extractor')
+        
         hists = [np.bincount(c, minlength=hist_n)[:hist_n] for c in counts]
         neighb_hists += np.vstack(hists)
-
         # if timer.total_time - last_display > 0.1:
         #     last_display = timer.total_time
         #     print(f"Calib Neighbors {i:08d}: timings {timer.total_time:4.2f}s")
