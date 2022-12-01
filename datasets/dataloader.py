@@ -525,6 +525,7 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
                 input_batches_len += [np.array([])]
                 input_neighbors += [np.array([])]
                 input_pools += [np.array([])]
+                input_upsamples += [np.array([])]
             
             src_coarse = src_pcd[src_feats_indices]
             tgt_coarse = tgt_pcd[tgt_feats_indices]
