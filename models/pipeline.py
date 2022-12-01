@@ -60,6 +60,8 @@ class Pipeline(nn.Module):
         tgt_ind_coarse_split = data['tgt_ind_coarse_split']
         src_ind_coarse = data['src_ind_coarse']
         tgt_ind_coarse = data['tgt_ind_coarse']
+        print('src_mask.shape : ', src_mask.shape)
+        print('tgt_mask.shape : ', tgt_mask.shape)
         print('src_ind_coarse_split.shape : ', src_ind_coarse_split.shape)
         print('tgt_ind_coarse_split.shape : ', tgt_ind_coarse_split.shape)
         print('src_ind_coarse.shape : ', src_ind_coarse.shape)
