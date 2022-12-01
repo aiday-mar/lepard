@@ -520,11 +520,19 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
             for block_i, block in enumerate(config.architecture):
                 input_points += [np.array([])]
                 input_batches_len += [np.array([])]
+                input_neighbors += [np.array([])]
             
             src_coarse = src_pcd[src_feats_indices]
             tgt_coarse = tgt_pcd[tgt_feats_indices]
-            input_points[coarse_level] = np.concatenate((src_coarse, tgt_coarse))
+            total_points = np.concatenate((src_coarse, tgt_coarse))
+            input_points[coarse_level] = total_points
             input_batches_len[coarse_level] = torch.tensor([src_feats_indices.shape[0], tgt_feats_indices.shape[0]], dtype=torch.int32)
+            dists = np.array((total_points.shape[0], total_points.shape[0]))
+            for i in range(total_points.shape[0]):
+                for j in range(total_points.shape[0]):
+                    dists[i][j] = np.linalg.norm(total_points[i, :] - total_points[j, :])
+            k  = 50
+            input_neighbors[coarse_level] = np.argpartition(dists, k, axis =- 1)[:, :k]
             
             c_flow = blend_scene_flow( src_coarse, tgt_pcd, s2t_flow, knn=3)
             c_src_pcd_deformed = src_coarse + c_flow
