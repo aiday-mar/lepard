@@ -473,6 +473,7 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
     src_mask = torch.zeros([b_size, src_pts_max], dtype=torch.bool)
     tgt_mask = torch.zeros([b_size, tgt_pts_max], dtype=torch.bool)
 
+    print('pts_num_coarse.shape : ', pts_num_coarse.shape)
     for entry_id, cnt in enumerate( pts_num_coarse ): #input_batches_len[-1].numpy().reshape(-1,2)) :
 
         n_s_pts, n_t_pts = cnt
