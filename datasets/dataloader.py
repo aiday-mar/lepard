@@ -330,6 +330,8 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
     sflow_list = []
     metric_index_list = [] #for feature matching recall computation
 
+    print('list_data : ', list_data)
+    
     for ind, ( src_pcd, tgt_pcd, src_feats, tgt_feats, correspondences, rot, trn, s2t_flow, metric_index) in enumerate(list_data):
 
         correspondences_list.append(correspondences )
