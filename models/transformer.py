@@ -233,13 +233,13 @@ class RepositioningTransformer(nn.Module):
             position_layer = 0
             data.update({"position_layers":{}})
 
-            src_feat = VolPE.embed_pos(self.pe_type, src_feat, src_pe)
-            tgt_feat = VolPE.embed_pos(self.pe_type, tgt_feat, tgt_pe)
-
+            src_feat = VolPE.embed_pos(self.pe_type, src_feat, src_pe).float()
+            tgt_feat = VolPE.embed_pos(self.pe_type, tgt_feat, tgt_pe).float()
+            
             for layer, name in zip(self.layers, self.layer_types):
                 if name == 'self':
                     if self.timers: self.timers.tic('self atten')
-                    src_feat = layer(src_feat, src_feat, None, None, src_mask, src_mask, )
+                    src_feat = layer(src_feat, src_feat, None, None, src_mask, src_mask)
                     tgt_feat = layer(tgt_feat, tgt_feat, None, None, tgt_mask, tgt_mask)
                     if self.timers: self.timers.toc('self atten')
                 elif name == 'cross':
