@@ -105,24 +105,18 @@ class RepositioningTransformer(nn.Module):
         self.layer_types = config['layer_types']
         self.positioning_type = config['positioning_type']
         self.pe_type =config['pe_type']
-
         self.entangled= config['entangled']
 
         self.positional_encoding = VolPE(config)
-
-
         encoder_layer = GeometryAttentionLayer (config)
-
         self.layers = nn.ModuleList()
 
         for l_type in self.layer_types:
 
             if l_type in ['self','cross']:
-
                 self.layers.append( copy.deepcopy(encoder_layer))
 
             elif l_type == "positioning":
-
                 if self.positioning_type == 'procrustes':
                     positioning_layer = nn.ModuleList()
                     positioning_layer.append( Matching(config['feature_matching']))
@@ -135,13 +129,10 @@ class RepositioningTransformer(nn.Module):
                 else :
                     raise KeyError(self.positioning_type + " undefined positional encoding type")
 
-
             else:
                 raise KeyError()
 
         self._reset_parameters()
-
-
 
     def forward(self, src_feat, tgt_feat, s_pcd, t_pcd, src_mask, tgt_mask, data, T = None, timers = None, feature_extractor = 'kpfcn'):
 
