@@ -60,7 +60,9 @@ class GeometryAttentionLayer(nn.Module):
             #Rwx roformer : https://arxiv.org/abs/2104.09864
             q = q.float()
             qw = self.q_proj(q)
+            k = k.float()
             kw = self.k_proj(k)
+            v = v.float()
             vw = self.v_proj(v)
 
             if qp is not None: # disentangeld
