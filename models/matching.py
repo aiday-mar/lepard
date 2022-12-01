@@ -114,8 +114,16 @@ class Matching(nn.Module):
         @param tgt_mask: [B, T]
         @return:
         '''
-
+        print('\n')
         print('Inside of forward method of Matching')
+        
+        print('src_feats.shape : ', src_feats.shape)
+        print('tgt_feats.shape : ', tgt_feats.shape)
+        print('src_pe.shape :', src_pe.shape)
+        print('tgt_pe.shape : ', tgt_pe.shape)
+        print('src_mask.shape : ', src_mask.shape)
+        print('tgt_mask.shape : ', tgt_mask.shape)
+        
         src_feats = self.src_proj(src_feats)
         tgt_feats = self.src_proj(tgt_feats)
 

@@ -119,7 +119,7 @@ class KPFCN(nn.Module):
 
     def forward(self, batch, phase = 'encode'):
         # Get input features
-
+        print('Inside of the forward method of KPFCN')
         if phase == 'coarse' :
 
             x = batch['features'].clone().detach()

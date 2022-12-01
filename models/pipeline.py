@@ -16,8 +16,6 @@ class Pipeline(nn.Module):
         self.coarse_matching = Matching(config['coarse_matching'])
         self.soft_procrustes = SoftProcrustesLayer(config['coarse_transformer']['procrustes'])
 
-
-
     def forward(self, data, timers=None):
 
         self.timers = timers
@@ -46,9 +44,6 @@ class Pipeline(nn.Module):
         if self.timers: self.timers.toc('procrustes_layer')
 
         return data
-
-
-
 
     def split_feats(self, geo_feats, data):
         

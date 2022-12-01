@@ -122,9 +122,7 @@ class Trainer(object):
                 data = self.model(inputs, timers=self.timers)  # [N1, C1], [N2, C2]
                 loss_info = self.loss(data)
 
-
         return loss_info
-
 
     def inference_one_epoch(self, epoch, phase):
         gc.collect()

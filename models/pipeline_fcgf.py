@@ -54,7 +54,8 @@ class PipelineFCGF(nn.Module):
         print('Inside of forward method of PipelineFCGF')
         print('geo_feats.shape : ', geo_feats.shape)
         pcd = data['points'][self.config['kpfcn_config']['coarse_level']]
-
+        print('pcd.shape : ', pcd.shape)
+        
         src_mask = data['src_mask']
         tgt_mask = data['tgt_mask']
         print('src_mask.shape : ', src_mask.shape)
