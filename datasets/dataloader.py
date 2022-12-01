@@ -561,8 +561,6 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
     print('coarse_flow[0].shape : ', coarse_flow[0].shape)
     print('len(sflow_list) : ', len(sflow_list))
     print('sflow_list[0].shape : ', sflow_list[0].shape)
-    print('len(metric_index_list) : ', len(metric_index_list))
-    print('metric_index_list[0].shape : ', metric_index_list[0].shape)
     
     dict_inputs = {
         'src_pcd_list': src_pcd_list,
