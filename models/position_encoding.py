@@ -57,14 +57,19 @@ class VolumetricPositionEncoding(nn.Module):
         @param XYZ: [B,N,3]
         @return:
         '''
+        print('Inside of forward of VolPE')
         bsize, npoint, _ = XYZ.shape
 
         vox = self.voxelize( XYZ)
         x_position, y_position, z_position = vox[..., 0:1], vox[...,1:2], vox[...,2:3]
+        print('x_position.shape : ', x_position.shape)
+        print('y_position.shape : ', y_position.shape)
+        print('z_position.shape : ', z_position.shape)
         div_term = torch.exp( torch.arange(0, self.feature_dim // 3, 2, dtype=torch.float, device=XYZ.device) *  (-math.log(10000.0) / (self.feature_dim // 3)))
         div_term = div_term.view( 1,1, -1) # [1, 1, d//6]
 
         sinx = torch.sin(x_position * div_term) # [B, N, d//6]
+        print('sinx.shape : ', sinx.shape)
         cosx = torch.cos(x_position * div_term)
         siny = torch.sin(y_position * div_term)
         cosy = torch.cos(y_position * div_term)
@@ -72,9 +77,11 @@ class VolumetricPositionEncoding(nn.Module):
         cosz = torch.cos(z_position * div_term)
 
         if self.pe_type == 'sinusoidal' :
+            print('Entered into sinusoidal encoding')
             position_code = torch.cat( [ sinx, cosx, siny, cosy, sinz, cosz] , dim=-1 )
 
         elif self.pe_type == "rotary" :
+            print('Entered into rotary encoding')
             # sin/cos [θ0,θ1,θ2......θd/6-1] -> sin/cos [θ0,θ0,θ1,θ1,θ2,θ2......θd/6-1,θd/6-1]
             sinx, cosx, siny, cosy, sinz, cosz = map( lambda  feat:torch.stack([feat, feat], dim=-1).view(bsize, npoint, -1),
                  [ sinx, cosx, siny, cosy, sinz, cosz] )
