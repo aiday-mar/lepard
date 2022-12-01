@@ -21,11 +21,11 @@ kpfcn_config:
   modulated: False
   add_cross_score: True
   condition_feature: True
-  coarse_feature_dim: &coarse_feature_dim 528 #[default 528, 1056]
+  coarse_feature_dim: &coarse_feature_dim 32 #[default 528, 1056]
   fine_feature_dim:  264
   coarse_match_radius: 0.024 # 0.05 for L: -3, 0.06 for L: -2, 0.1 for L: -1
   coarse_level: -2
-#  fine_match_radius: 0.0375
+  #  fine_match_radius: 0.0375
 
 
 coarse_matching: &coarse_matching
@@ -64,7 +64,7 @@ train_loss:
   match_weight: 1
   match_type: *match_type
   positioning_type: *positioning_type
-# confidence_threshold : 0.2
+  # confidence_threshold : 0.2
   confidence_threshold_metric: 0.1  #confidence_threshold for evaluation
   inlier_thr: 0.04 # 4 cm
   fmr_thr: 0.5
