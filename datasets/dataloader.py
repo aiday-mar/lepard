@@ -531,10 +531,9 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
             print('total_points.shape : ', total_points.shape)
             input_points[coarse_level] = total_points
             input_batches_len[coarse_level] = torch.tensor([src_feats_indices.shape[0], tgt_feats_indices.shape[0]], dtype=torch.int32)
-            dists = np.zeros((total_points.shape[0], total_points.shape[0]))
-            for i in range(total_points.shape[0]):
-                for j in range(total_points.shape[0]):
-                    dists[i][j] = np.linalg.norm(total_points[i, :] - total_points[j, :])
+            # dists = np.zeros((total_points.shape[0], total_points.shape[0]))
+            inter = total_points.reshape(total_points.shape[0], 1, total_points.shape[1])
+            dists = np.sqrt(np.einsum('ijk, ijk->ij', total_points-inter, total_points-inter))
             k  = 50
             input_neighbors[coarse_level] = np.argpartition(dists, k, axis =- 1)[:, :k]
             
