@@ -95,12 +95,16 @@ class _AstrivisFCGF(Dataset):
         src_pcd_fcgf = file_pointers[0] + '_' + file_pointers[2] + '_fcgf.npz'
         tgt_pcd_fcgf = file_pointers[1] + '_' + file_pointers[3] + '_fcgf.npz'
         
-        src_feats = np.load(self.path + folder_string + '/transformed/' + src_pcd_fcgf)
-        tgt_feats = np.load(self.path + folder_string + '/transformed/' + tgt_pcd_fcgf)
-        src_feats = src_feats['arr_0']
-        tgt_feats = tgt_feats['arr_0']
+        src_feats_data = np.load(self.path + folder_string + '/transformed/' + src_pcd_fcgf)
+        tgt_feats_data = np.load(self.path + folder_string + '/transformed/' + tgt_pcd_fcgf)
+        src_feats = src_feats_data['decriptors']
+        tgt_feats = tgt_feats_data['decriptors']
+        src_feats_indices = src_feats_data['indices']
+        tgt_feats_indices = tgt_feats_data['indices']
         print('src_feats.shape : ', src_feats.shape)
         print('tgt_feats.shape : ', tgt_feats.shape)
+        print('src_feats_indices.shape : ', src_feats_indices.shape)
+        print('tgt_feats_indices.shape : ', tgt_feats_indices.shape)
                 
         matches = np.load(self.path + folder_string + '/matches/' + filename)
         correspondences = np.array(matches['matches'])
@@ -132,4 +136,4 @@ class _AstrivisFCGF(Dataset):
         
         metric_index = None
         
-        return src_pcd, tgt_pcd, src_feats, tgt_feats, correspondences, rot, trans, s2t_flow, metric_index
+        return src_pcd, tgt_pcd, src_feats, tgt_feats, correspondences, rot, trans, s2t_flow, metric_index, src_feats_indices, tgt_feats_indices

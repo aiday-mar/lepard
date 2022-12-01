@@ -23,12 +23,13 @@ class PipelineFCGF(nn.Module):
         print('Inside of forward method of PipelineFCGF')
         self.timers = timers
 
+        
         if self.timers: self.timers.tic('kpfcn backbone encode')
         coarse_feats = self.backbone(data, phase="coarse")
         if self.timers: self.timers.toc('kpfcn backbone encode')
 
         if self.timers: self.timers.tic('coarse_preprocess')
-        src_feats, tgt_feats, s_pcd, t_pcd, src_mask, tgt_mask = self.split_feats (coarse_feats, data)
+        src_feats, tgt_feats, s_pcd, t_pcd, src_mask, tgt_mask = self.split_feats(coarse_feats, data)
         data.update({ 's_pcd': s_pcd, 't_pcd': t_pcd })
         if self.timers: self.timers.toc('coarse_preprocess')
 

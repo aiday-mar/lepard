@@ -107,15 +107,11 @@ class KPFCN(nn.Module):
                 r *= 0.5
                 out_dim = out_dim // 2
 
-
         #####################
         # fine output layer
         #####################
         fine_feature_dim =  config.fine_feature_dim
         self.fine_out = nn.Conv1d(out_dim, fine_feature_dim, kernel_size=1, bias=True)
-
-
-
 
     def forward(self, batch, phase = 'encode'):
         # Get input features
@@ -147,7 +143,6 @@ class KPFCN(nn.Module):
         #     coarse_feats = coarse_feats.transpose(0,1).unsqueeze(0)
         #     coarse_feats = self.coarse_in(coarse_feats)
         #     x = coarse_feats.transpose(1,2).squeeze(0)
-        #
         #
         #     for block_i, block_op in enumerate(self.decoder_blocks):
         #         if block_i > 1  :
