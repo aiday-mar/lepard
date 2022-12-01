@@ -145,7 +145,6 @@ def collate_fn_3dmatch(list_data, config, neighborhood_limits ):
 
         # Convolution neighbors indices
         # *****************************
-
         if layer_blocks:
             # Convolutions are done in this layer, compute the neighbors with the good radius
             if np.any(['deformable' in blck for blck in layer_blocks[:-1]]):
@@ -161,30 +160,24 @@ def collate_fn_3dmatch(list_data, config, neighborhood_limits ):
 
         # Pooling neighbors indices
         # *************************
-
         # If end of layer is a pooling operation
         if 'pool' in block or 'strided' in block:
 
             # New subsampling length
             dl = 2 * r_normal / config.conv_radius
-
             # Subsampled points
             pool_p, pool_b = batch_grid_subsampling_kpconv(batched_points, batched_lengths, sampleDl=dl)
-
             # Radius of pooled neighbors
             if 'deformable' in block:
                 r = r_normal * config.deform_radius / config.conv_radius
             else:
                 r = r_normal
-
             # Subsample indices
             pool_i = batch_neighbors_kpconv(pool_p, batched_points, pool_b, batched_lengths, r,
                                             neighborhood_limits[layer])
-
             # Upsample indices (with the radius of the next layer to keep wanted density)
             up_i = batch_neighbors_kpconv(batched_points, pool_p, batched_lengths, pool_b, 2 * r,
                                           neighborhood_limits[layer])
-
         else:
             # No pooling in the end of this layer, no pooling indices required
             pool_i = torch.zeros((0, 1), dtype=torch.int64)
@@ -231,18 +224,15 @@ def collate_fn_3dmatch(list_data, config, neighborhood_limits ):
     for entry_id, cnt in enumerate( pts_num_coarse ): #input_batches_len[-1].numpy().reshape(-1,2)) :
 
         n_s_pts, n_t_pts = cnt
-
         '''split mask for bottlenect feats'''
         src_mask[entry_id][:n_s_pts] = 1
         tgt_mask[entry_id][:n_t_pts] = 1
-
 
         '''split indices of bottleneck feats'''
         src_ind_coarse_split.append( torch.arange( n_s_pts ) + entry_id * src_pts_max )
         tgt_ind_coarse_split.append( torch.arange( n_t_pts ) + entry_id * tgt_pts_max )
         src_ind_coarse.append( torch.arange( n_s_pts ) + accumu )
         tgt_ind_coarse.append( torch.arange( n_t_pts ) + accumu + n_s_pts )
-
 
         '''get match at coarse level'''
         c_src_pcd = coarse_pcd[accumu : accumu + n_s_pts]
@@ -521,23 +511,23 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
             tgt_mask[0][:n_tgt_feats] = 1
             
             for block_i, block in enumerate(config.architecture):
-                input_points += [np.array([])]
-                input_batches_len += [np.array([])]
-                input_neighbors += [np.array([])]
-                input_pools += [np.array([])]
-                input_upsamples += [np.array([])]
+                input_points += [torch.tensor([])]
+                input_batches_len += [torch.tensor([])]
+                input_neighbors += [torch.tensor([])]
+                input_pools += [torch.tensor([])]
+                input_upsamples += [torch.tensor([])]
             
             src_coarse = src_pcd[src_feats_indices]
             tgt_coarse = tgt_pcd[tgt_feats_indices]
             total_points = np.concatenate((src_coarse, tgt_coarse))
             print('total_points.shape : ', total_points.shape)
             input_points[coarse_level] = total_points
-            input_batches_len[coarse_level] = torch.tensor([src_feats_indices.shape[0], tgt_feats_indices.shape[0]], dtype=torch.int32)
+            input_batches_len[coarse_level] = torch.from_numpy([src_feats_indices.shape[0], tgt_feats_indices.shape[0]], dtype=torch.int32)
             # dists = np.zeros((total_points.shape[0], total_points.shape[0]))
             inter = total_points.reshape(total_points.shape[0], 1, total_points.shape[1])
             dists = np.sqrt(np.einsum('ijk, ijk->ij', total_points-inter, total_points-inter))
             k  = 50
-            input_neighbors[coarse_level] = np.argpartition(dists, k, axis =- 1)[:, :k]
+            input_neighbors[coarse_level] = torch.tensor(np.argpartition(dists, k, axis =- 1)[:, :k])
             
             c_flow = blend_scene_flow( src_coarse, tgt_pcd, s2t_flow, knn=3)
             c_src_pcd_deformed = src_coarse + c_flow
