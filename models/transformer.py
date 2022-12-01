@@ -95,11 +95,6 @@ class GeometryAttentionLayer(nn.Module):
 
         return e
 
-
-
-
-
-
 class RepositioningTransformer(nn.Module):
 
     def __init__(self, config):
