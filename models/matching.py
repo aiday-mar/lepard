@@ -106,15 +106,6 @@ class Matching(nn.Module):
 
         return index, mconf, mask
 
-
-
-
-
-
-
-
-
-
     def forward(self, src_feats, tgt_feats, src_pe, tgt_pe, src_mask, tgt_mask, data, pe_type="rotary"):
         '''
         @param src_feats: [B, S, C]
@@ -124,6 +115,7 @@ class Matching(nn.Module):
         @return:
         '''
 
+        print('Inside of forward method of Matching')
         src_feats = self.src_proj(src_feats)
         tgt_feats = self.src_proj(tgt_feats)
 

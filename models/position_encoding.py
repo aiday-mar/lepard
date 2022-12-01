@@ -42,6 +42,8 @@ class VolumetricPositionEncoding(nn.Module):
     def embed_pos(pe_type, x, pe):
         """ combine feature and position code
         """
+        print('pe.shape : ', pe.shape)
+        print('x.shape : ', x.shape)
         if  pe_type == 'rotary':
             return VolumetricPositionEncoding.embed_rotary(x, pe[..., 0], pe[..., 1])
         elif  pe_type == 'sinusoidal':

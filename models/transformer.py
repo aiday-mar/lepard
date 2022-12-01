@@ -150,6 +150,7 @@ class RepositioningTransformer(nn.Module):
 
     def forward(self, src_feat, tgt_feat, s_pcd, t_pcd, src_mask, tgt_mask, data, T = None, timers = None):
 
+        print('Inside forward of repositioning transformer')
         self.timers = timers
 
         assert self.d_model == src_feat.size(2), "the feature number of src and transformer must be equal"
