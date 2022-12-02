@@ -6,7 +6,6 @@ from models.position_encoding import VolumetricPositionEncoding as VolPE
 def log_optimal_transport(scores, alpha, iters, src_mask, tgt_mask ):
 
     b, m, n = scores.shape
-
     if src_mask is None:
         ms = m
         ns = n
@@ -22,7 +21,6 @@ def log_optimal_transport(scores, alpha, iters, src_mask, tgt_mask ):
                            torch.cat([bins1, alpha], -1)], 1)
 
     norm = - (ms + ns).log() # [b, 1]
-
     log_mu = torch.cat([norm  .repeat(1, m), ns.log() + norm], dim=1)
     log_nu = torch.cat([norm.repeat(1, n), ms.log() + norm], dim=1)
 
@@ -30,13 +28,9 @@ def log_optimal_transport(scores, alpha, iters, src_mask, tgt_mask ):
     for _ in range(iters):
         u = log_mu - torch.logsumexp( Z + v.unsqueeze(1), dim=2)
         v = log_nu - torch.logsumexp(Z + u.unsqueeze(2), dim=1)
-
     Z=  Z + u.unsqueeze(2) + v.unsqueeze(1)
-
     Z = Z - norm.view(-1,1,1)
-
     return Z
-
 
 class Matching(nn.Module):
 
@@ -44,11 +38,9 @@ class Matching(nn.Module):
         super().__init__()
 
         self.match_type = config['match_type']
-
         self.confidence_threshold = config['confidence_threshold']
-
+        self.mutual = config['mutual']
         d_model = config['feature_dim']
-
         self.src_proj = nn.Linear(d_model, d_model, bias=False)
         self.tgt_proj = nn.Linear(d_model, d_model, bias=False)
 
@@ -67,11 +59,11 @@ class Matching(nn.Module):
         else:
             raise NotImplementedError()
 
-
     @staticmethod
     @torch.no_grad()
     def get_match( conf_matrix, thr, mutual=True):
         print('thr in get_match : ', thr)
+        print('mutual : ', mutual)
         mask = conf_matrix > thr
         #mutual nearest
         if mutual:
@@ -91,7 +83,6 @@ class Matching(nn.Module):
     def get_topk_match( conf_matrix, thr, mutual=True):
 
         mask = conf_matrix > thr
-
         #mutual nearest
         if mutual:
             mask = mask \
@@ -102,7 +93,6 @@ class Matching(nn.Module):
         index = (mask==True).nonzero()
         b_ind, src_ind, tgt_ind = index[:,0], index[:,1], index[:,2]
         mconf = conf_matrix[b_ind, src_ind, tgt_ind]
-
         return index, mconf, mask
 
     def forward(self, src_feats, tgt_feats, src_pe, tgt_pe, src_mask, tgt_mask, data, pe_type="rotary"):
@@ -157,7 +147,7 @@ class Matching(nn.Module):
 
         print('conf_matrix.shape : ', conf_matrix.shape)
         print('conf_matrix : ', conf_matrix)
-        coarse_match, _, _ = self.get_match(conf_matrix, self.confidence_threshold)
+        coarse_match, _, _ = self.get_match(conf_matrix, self.confidence_threshold, self.mutual)
         print('coarse_match.shape : ', coarse_match.shape)
         return conf_matrix, coarse_match
 
