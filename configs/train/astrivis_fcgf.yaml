@@ -30,7 +30,7 @@ kpfcn_config:
 
 coarse_matching: &coarse_matching
   feature_dim: *coarse_feature_dim
-  confidence_threshold: 0.2
+  confidence_threshold: 1.0e-08
   dsmax_temperature: 0.1
   match_type: &match_type 'dual_softmax' #sinkhorn, dual_softmax
   entangled: *entangled
@@ -65,7 +65,7 @@ train_loss:
   match_type: *match_type
   positioning_type: *positioning_type
   # confidence_threshold : 0.2
-  confidence_threshold_metric: 0.01  #confidence_threshold for evaluation
+  confidence_threshold_metric: 0.1  #confidence_threshold for evaluation
   inlier_thr: 0.04 # 4 cm
   fmr_thr: 0.5
   registration_threshold: 0.2 # [3DMatch: 0.2m]
