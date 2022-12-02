@@ -51,7 +51,6 @@ class SoftProcrustesLayer(nn.Module):
         @return:
         '''
 
-        print('Inside of forward method of SoftProcrustesLayer')
         bsize, N, M = conf_matrix.shape
         # subsample correspondence
         src_len = src_mask.sum(dim=1)
