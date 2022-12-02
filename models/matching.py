@@ -75,7 +75,6 @@ class Matching(nn.Module):
         index = (mask==True).nonzero()
         b_ind, src_ind, tgt_ind = index[:,0], index[:,1], index[:,2]
         mconf = conf_matrix[b_ind, src_ind, tgt_ind]
-
         return index, mconf, mask
 
     @staticmethod
