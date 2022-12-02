@@ -218,6 +218,6 @@ class Trainer(object):
             
             print('Average loss : ',  stats_meter['loss'].avg)
             print('Best loss : ', str(self.best_loss), ' at epoch : ', str(self.best_epoch))
-            self._snapshot(epoch, 'epoch_' + str(epoch))
+            self._snapshot(epoch, 'epoch_fcgf_' + str(epoch))
 
         print("Training finished!")
