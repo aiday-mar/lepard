@@ -30,7 +30,7 @@ kpfcn_config:
 
 coarse_matching: &coarse_matching
   feature_dim: *coarse_feature_dim
-  confidence_threshold: 3.0e-06
+  confidence_threshold: 1.0e-06
   mutual: False
   dsmax_temperature: 0.1
   match_type: &match_type 'dual_softmax' #sinkhorn, dual_softmax
