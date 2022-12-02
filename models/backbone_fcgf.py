@@ -12,4 +12,5 @@ class FCGF(nn.Module):
         print('Inside of forward method of FCGF')
         x = batch['features'].clone().detach()
         print('x.shape : ', x.shape)
-        return torch.tensor(x).to('cuda:0')
+        # return torch.tensor(x).to('cuda:0')
+        return x.to('cuda:0')
