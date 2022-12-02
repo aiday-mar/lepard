@@ -146,42 +146,43 @@ class Trainer(object):
             if self.timers: self.timers.toc('load batch')
             ##################################
             if self.timers: self.timers.tic('inference_one_batch')
-            loss_info = self.inference_one_batch(inputs, phase)
-            if self.timers: self.timers.toc('inference_one_batch')
-            ###################################################
-            # run optimisation
-            # if self.timers: self.timers.tic('run optimisation')
-            if ((c_iter + 1) % self.iter_size == 0 and phase == 'train'):
-                gradient_valid = validate_gradient(self.model)
-                if (gradient_valid):
-                    self.optimizer.step()
-                else:
-                    self.logger.write('gradient not valid\n')
-                self.optimizer.zero_grad()
-            # if self.timers: self.timers.toc('run optimisation')
-            ################################
-            torch.cuda.empty_cache()
-            if stats_meter is None:
-                stats_meter = dict()
-                for key, _ in loss_info.items():
-                    stats_meter[key] = AverageMeter()
-            for key, value in loss_info.items():
-                stats_meter[key].update(value)
+            print(inputs['stack_lengths'])
+            if inputs['stack_lengths'][0] < 10000 and inputs['stack_lengths'][1] < 10000:
+                loss_info = self.inference_one_batch(inputs, phase)
+                ###################################################
+                # run optimisation
+                # if self.timers: self.timers.tic('run optimisation')
+                if ((c_iter + 1) % self.iter_size == 0 and phase == 'train'):
+                    gradient_valid = validate_gradient(self.model)
+                    if (gradient_valid):
+                        self.optimizer.step()
+                    else:
+                        self.logger.write('gradient not valid\n')
+                    self.optimizer.zero_grad()
+                # if self.timers: self.timers.toc('run optimisation')
+                ################################
+                torch.cuda.empty_cache()
+                if stats_meter is None:
+                    stats_meter = dict()
+                    for key, _ in loss_info.items():
+                        stats_meter[key] = AverageMeter()
+                for key, value in loss_info.items():
+                    stats_meter[key].update(value)
 
-            if phase == 'train' :
-                if (c_iter + 1) % self.verbose_freq == 0 and self.verbose  :
-                    curr_iter = num_iter * (epoch - 1) + c_iter
-                    for key, value in stats_meter.items():
-                        self.summary_writer.add_scalar(f'{phase}/{key}', value.avg, curr_iter)
-                    dump_mess=True
-                    if dump_mess:
-                        message = f'{phase} Epoch: {epoch} [{c_iter + 1:4d}/{num_iter}]'
+                if phase == 'train' :
+                    if (c_iter + 1) % self.verbose_freq == 0 and self.verbose  :
+                        curr_iter = num_iter * (epoch - 1) + c_iter
                         for key, value in stats_meter.items():
-                            message += f'{key}: {value.avg:.2f}\t'
-                        self.logger.write(message + '\n')
-
-            if self.timers: self.timers.toc('one_iteration')
-
+                            self.summary_writer.add_scalar(f'{phase}/{key}', value.avg, curr_iter)
+                        dump_mess=True
+                        if dump_mess:
+                            message = f'{phase} Epoch: {epoch} [{c_iter + 1:4d}/{num_iter}]'
+                            for key, value in stats_meter.items():
+                                message += f'{key}: {value.avg:.2f}\t'
+                            self.logger.write(message + '\n')
+                if self.timers: self.timers.toc('one_iteration')
+            if self.timers: self.timers.toc('inference_one_batch')
+            
         # report evaluation score at end of each epoch
         if phase in ['val', 'test']:
             for key, value in stats_meter.items():
