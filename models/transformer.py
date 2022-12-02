@@ -248,12 +248,9 @@ class RepositioningTransformer(nn.Module):
                     tgt_feat = layer(tgt_feat, src_feat, None, None, tgt_mask, src_mask)
                     if self.timers: self.timers.toc('cross atten')
                 elif name == 'positioning':
-                    pass*
+                    pass
 
             return src_feat, tgt_feat, src_pe, tgt_pe
-
-
-
 
     def rand_rot_pcd (self, pcd, mask):
         '''
