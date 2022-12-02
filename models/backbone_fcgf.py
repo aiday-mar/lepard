@@ -9,6 +9,7 @@ class FCGF(nn.Module):
         super(FCGF, self).__init__()
 
     def forward(self, batch, phase = 'encode'):
-        
+        print('Inside of forward method of FCGF')
         x = batch['features'].clone().detach()
-        return torch.tensor(x).to('cuda:0')
+        print('x.shape : ', x.shape)
+        return x.to('cuda:0')

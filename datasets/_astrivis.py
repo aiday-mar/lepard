@@ -125,4 +125,4 @@ class _Astrivis(Dataset):
         
         metric_index = None
         
-        return src_pcd, tgt_pcd, src_feats, tgt_feats, correspondences, rot, trans, s2t_flow, metric_index
+        return src_pcd, tgt_pcd, src_feats, tgt_feats, correspondences, rot, trans, s2t_flow, metric_index, None, None

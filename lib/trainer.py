@@ -98,33 +98,26 @@ class Trainer(object):
         assert phase in ['train', 'val', 'test']
         inputs ['phase'] = phase
 
-
         if (phase == 'train'):
             self.model.train()
             if self.timers: self.timers.tic('forward pass')
             data = self.model(inputs, timers=self.timers)  # [N1, C1], [N2, C2]
             if self.timers: self.timers.toc('forward pass')
 
-
             if self.timers: self.timers.tic('compute loss')
             loss_info = self.loss( data)
             if self.timers: self.timers.toc('compute loss')
 
-
             if self.timers: self.timers.tic('backprop')
             loss_info['loss'].backward()
             if self.timers: self.timers.toc('backprop')
-
-
         else:
             self.model.eval()
             with torch.no_grad():
                 data = self.model(inputs, timers=self.timers)  # [N1, C1], [N2, C2]
                 loss_info = self.loss(data)
 
-
         return loss_info
-
 
     def inference_one_epoch(self, epoch, phase):
         gc.collect()
@@ -132,15 +125,13 @@ class Trainer(object):
 
         # init stats meter
         stats_meter = None #  self.stats_meter()
-
         num_iter = int(len(self.loader[phase].dataset) // self.loader[phase].batch_size) # drop last incomplete batch
         c_loader_iter = self.loader[phase].__iter__()
-
         self.optimizer.zero_grad()
+
         for c_iter in tqdm(range(num_iter)):  # loop through this epoch
 
             if self.timers: self.timers.tic('one_iteration')
-
             ##################################
             if self.timers: self.timers.tic('load batch')
             inputs = c_loader_iter.next()
@@ -154,13 +145,9 @@ class Trainer(object):
                     inputs [k] = v.to(self.device)
             if self.timers: self.timers.toc('load batch')
             ##################################
-
-
             if self.timers: self.timers.tic('inference_one_batch')
             loss_info = self.inference_one_batch(inputs, phase)
             if self.timers: self.timers.toc('inference_one_batch')
-
-
             ###################################################
             # run optimisation
             # if self.timers: self.timers.tic('run optimisation')
@@ -173,9 +160,7 @@ class Trainer(object):
                 self.optimizer.zero_grad()
             # if self.timers: self.timers.toc('run optimisation')
             ################################
-
             torch.cuda.empty_cache()
-
             if stats_meter is None:
                 stats_meter = dict()
                 for key, _ in loss_info.items():
@@ -188,7 +173,6 @@ class Trainer(object):
                     curr_iter = num_iter * (epoch - 1) + c_iter
                     for key, value in stats_meter.items():
                         self.summary_writer.add_scalar(f'{phase}/{key}', value.avg, curr_iter)
-
                     dump_mess=True
                     if dump_mess:
                         message = f'{phase} Epoch: {epoch} [{c_iter + 1:4d}/{num_iter}]'
@@ -196,24 +180,17 @@ class Trainer(object):
                             message += f'{key}: {value.avg:.2f}\t'
                         self.logger.write(message + '\n')
 
-
             if self.timers: self.timers.toc('one_iteration')
-
 
         # report evaluation score at end of each epoch
         if phase in ['val', 'test']:
             for key, value in stats_meter.items():
                 self.summary_writer.add_scalar(f'{phase}/{key}', value.avg, epoch)
-
         message = f'{phase} Epoch: {epoch}'
         for key, value in stats_meter.items():
             message += f'{key}: {value.avg:.2f}\t'
         self.logger.write(message + '\n')
-
         return stats_meter
-
-
-
 
     def train(self):
         print('Start training...')
@@ -239,9 +216,8 @@ class Trainer(object):
                         self.best_epoch = epoch
                 if self.timers: self.timers.print()
             
-            print('average loss : ',  stats_meter['loss'].avg)
-            print('best loss : ', str(self.best_loss), ' at epoch : ', str(self.best_epoch))
+            print('Average loss : ',  stats_meter['loss'].avg)
+            print('Best loss : ', str(self.best_loss), ' at epoch : ', str(self.best_epoch))
             self._snapshot(epoch, 'epoch_' + str(epoch))
 
-        # finish all epoch
         print("Training finished!")

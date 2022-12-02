@@ -42,6 +42,8 @@ class VolumetricPositionEncoding(nn.Module):
     def embed_pos(pe_type, x, pe):
         """ combine feature and position code
         """
+        print('pe.shape : ', pe.shape)
+        print('x.shape : ', x.shape)
         if  pe_type == 'rotary':
             return VolumetricPositionEncoding.embed_rotary(x, pe[..., 0], pe[..., 1])
         elif  pe_type == 'sinusoidal':
@@ -50,29 +52,48 @@ class VolumetricPositionEncoding(nn.Module):
             raise KeyError()
 
 
-    def forward(self,  XYZ):
+    def forward(self,  XYZ, feature_extractor = 'kpfcn'):
         '''
         @param XYZ: [B,N,3]
         @return:
         '''
+        print('\n')
+        print('Inside of forward of VolPE')
         bsize, npoint, _ = XYZ.shape
 
         vox = self.voxelize( XYZ)
         x_position, y_position, z_position = vox[..., 0:1], vox[...,1:2], vox[...,2:3]
+        print('x_position.shape : ', x_position.shape)
+        print('y_position.shape : ', y_position.shape)
+        print('z_position.shape : ', z_position.shape)
         div_term = torch.exp( torch.arange(0, self.feature_dim // 3, 2, dtype=torch.float, device=XYZ.device) *  (-math.log(10000.0) / (self.feature_dim // 3)))
         div_term = div_term.view( 1,1, -1) # [1, 1, d//6]
-
-        sinx = torch.sin(x_position * div_term) # [B, N, d//6]
-        cosx = torch.cos(x_position * div_term)
-        siny = torch.sin(y_position * div_term)
-        cosy = torch.cos(y_position * div_term)
-        sinz = torch.sin(z_position * div_term)
-        cosz = torch.cos(z_position * div_term)
+        print('feature_extractor : ', feature_extractor)
+        print('div_term.shape : ', div_term.shape)
+        if feature_extractor == 'fcgf':
+            sinx = torch.sin(x_position * div_term) # [B, N, d//6]
+            cosx = torch.cos(x_position * div_term)
+            siny = torch.sin(y_position * div_term)
+            cosy = torch.cos(y_position * div_term)
+            div_term = torch.exp( torch.arange(0, self.feature_dim // 3 + 1, 2, dtype=torch.float, device=XYZ.device) *  (-math.log(10000.0) / (self.feature_dim // 3)))
+            div_term = div_term.view( 1,1, -1) # [1, 1, d//6]
+            print('div_term.shape : ', div_term.shape)
+            sinz = torch.sin(z_position * div_term)
+            cosz = torch.cos(z_position * div_term)
+        elif feature_extractor == 'kpfcn':
+            sinx = torch.sin(x_position * div_term) # [B, N, d//6]
+            cosx = torch.cos(x_position * div_term)
+            siny = torch.sin(y_position * div_term)
+            cosy = torch.cos(y_position * div_term)
+            sinz = torch.sin(z_position * div_term)
+            cosz = torch.cos(z_position * div_term)
 
         if self.pe_type == 'sinusoidal' :
+            print('Entered into sinusoidal encoding')
             position_code = torch.cat( [ sinx, cosx, siny, cosy, sinz, cosz] , dim=-1 )
 
         elif self.pe_type == "rotary" :
+            print('Entered into rotary encoding')
             # sin/cos [θ0,θ1,θ2......θd/6-1] -> sin/cos [θ0,θ0,θ1,θ1,θ2,θ2......θd/6-1,θd/6-1]
             sinx, cosx, siny, cosy, sinz, cosz = map( lambda  feat:torch.stack([feat, feat], dim=-1).view(bsize, npoint, -1),
                  [ sinx, cosx, siny, cosy, sinz, cosz] )

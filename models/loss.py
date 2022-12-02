@@ -91,8 +91,8 @@ class MatchMotionLoss(nn.Module):
         tgt_mask = data['tgt_mask']
         conf_matrix_pred = data['conf_matrix_pred']
         match_gt = data['coarse_matches']
-        R_s2t_gt = data['batched_rot']
-        t_s2t_gt = data['batched_trn']
+        R_s2t_gt = data['batched_rot'].float()
+        t_s2t_gt = data['batched_trn'].float()
 
         #get the overlap mask, for dense motion loss
         s_overlap_mask = torch.zeros_like(src_mask).bool()
@@ -108,19 +108,19 @@ class MatchMotionLoss(nn.Module):
         loss = loss + self.mat_w * focal_coarse
 
         if recall > 0.01 and self.mot_w > 0:
-            R_s2t_pred = data["R_s2t_pred"]
-            t_s2t_pred = data["t_s2t_pred"]
+            R_s2t_pred = data["R_s2t_pred"].float()
+            t_s2t_pred = data["t_s2t_pred"].float()
 
             #compute predicted flow. Note, if 4dmatch, the R_pred,t_pred try to find the best rigid fit of deformation
-            src_pcd_wrapped_pred = (torch.matmul(R_s2t_pred, data['s_pcd'].transpose(1, 2)) + t_s2t_pred).transpose(1, 2)
+            src_pcd_wrapped_pred = (torch.matmul(R_s2t_pred, data['s_pcd'].float().transpose(1, 2)) + t_s2t_pred).transpose(1, 2)
             sflow_pred = src_pcd_wrapped_pred - data['s_pcd']
 
 
             if self.dataset == '4dmatch':
                 spcd_deformed = data['s_pcd'] + s2t_flow
-                src_pcd_wrapped_gt = (torch.matmul(R_s2t_gt, spcd_deformed.transpose(1, 2)) + t_s2t_gt).transpose(1, 2)
+                src_pcd_wrapped_gt = (torch.matmul(R_s2t_gt, spcd_deformed.float().transpose(1, 2)) + t_s2t_gt).transpose(1, 2)
             else : # 3dmatch
-                src_pcd_wrapped_gt = (torch.matmul(R_s2t_gt, data['s_pcd'].transpose(1, 2)) + t_s2t_gt).transpose(1, 2)
+                src_pcd_wrapped_gt = (torch.matmul(R_s2t_gt, data['s_pcd'].float().transpose(1, 2)) + t_s2t_gt).transpose(1, 2)
             sflow_gt = src_pcd_wrapped_gt - data['s_pcd']
 
             e1 = torch.sum(torch.abs(sflow_pred - sflow_gt), 2)
@@ -128,8 +128,6 @@ class MatchMotionLoss(nn.Module):
             l1_loss = torch.mean(e1)
             loss = loss + self.mot_w * l1_loss
 
-
-        #
         # if eval_metric :
         #
         #     match_pred, _, _ = CM.get_match(data['conf_matrix_pred'], thr=self.confidence_threshold_metric, mutual=self.mutual_nearest)
@@ -151,8 +149,6 @@ class MatchMotionLoss(nn.Module):
         #         rr = self.compute_registration_recall(rot, trn, data, self.registration_threshold)
         #         loss_info.update({'Registration_Recall': rr})
 
-
-
         if self.positioning_type == "procrustes":
 
             for layer_ind in data["position_layers"]:
@@ -161,8 +157,7 @@ class MatchMotionLoss(nn.Module):
                 focal_rpe = self.compute_correspondence_loss(rpe_conf_matrix, conf_matrix_gt, weight=c_weight)
                 recall, precision = self.compute_match_recall(conf_matrix_gt,
                                                               data["position_layers"][layer_ind]['match_pred'])
-                # loss_info.update({'focal_layer_%d' % layer_ind: focal_rpe, 'recall_layer_%d' % layer_ind: recall,
-                #                   'precision_layer_%d' % layer_ind: precision})
+                # loss_info.update({'focal_layer_%d' % layer_ind: focal_rpe, 'recall_layer_%d' % layer_ind: recall, 'precision_layer_%d' % layer_ind: precision})
                 loss = loss + self.mat_w * focal_rpe
 
                 if recall >0.01 and self.mot_w > 0:
@@ -171,7 +166,6 @@ class MatchMotionLoss(nn.Module):
 
                     src_pcd_wrapped_pred = (torch.matmul(R_s2t_pred, data['s_pcd'].transpose(1, 2)) + t_s2t_pred).transpose(1, 2)
                     sflow_pred = src_pcd_wrapped_pred - data['s_pcd']
-
 
                     if self.dataset == '4dmatch':
                         spcd_deformed = data['s_pcd'] + s2t_flow
@@ -186,7 +180,6 @@ class MatchMotionLoss(nn.Module):
                     loss = loss + self.mot_w * l1_loss
 
         return loss
-
 
     @staticmethod
     def compute_nrfmr(match_pred, data, recall_thr=0.04):
