@@ -12,7 +12,6 @@ def log_optimal_transport(scores, alpha, iters, src_mask, tgt_mask ):
     else :
         ms = src_mask.sum(dim=1, keepdim=True)
         ns = tgt_mask.sum(dim=1, keepdim=True)
-
     bins0 = alpha.expand(b, m, 1)
     bins1 = alpha.expand(b, 1, n)
     alpha = alpha.expand(b, 1, 1)
@@ -43,9 +42,7 @@ class Matching(nn.Module):
         d_model = config['feature_dim']
         self.src_proj = nn.Linear(d_model, d_model, bias=False)
         self.tgt_proj = nn.Linear(d_model, d_model, bias=False)
-
         self.entangled= config['entangled']
-
 
         if self.match_type == "dual_softmax":
             self.temperature = config['dsmax_temperature']
