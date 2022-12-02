@@ -83,6 +83,7 @@ class GeometryAttentionLayer(nn.Module):
         if kv_mask is not None:
             a.masked_fill_( q_mask[:, :, None, None] * (~kv_mask[:, None, :, None]), float('-inf'))
         a =  a / qw.size(3) **0.5
+        print('a.shape : ', a.shape)
         a = torch.softmax(a, dim=2)
         o = torch.einsum("nlsh,nshd->nlhd", a, vw).contiguous()  # [N, L, (H, D)]
 
