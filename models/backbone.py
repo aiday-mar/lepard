@@ -114,10 +114,7 @@ class KPFCN(nn.Module):
         self.fine_out = nn.Conv1d(out_dim, fine_feature_dim, kernel_size=1, bias=True)
 
     def forward(self, batch, phase = 'encode'):
-        # Get input features
-        print('Inside of the forward method of KPFCN')
         if phase == 'coarse' :
-
             x = batch['features'].clone().detach()
             # 1. joint encoder part
             self.skip_x = []
@@ -134,7 +131,6 @@ class KPFCN(nn.Module):
                     coarse_feats = x.transpose(0,1).unsqueeze(0)  #[B, C, N]
                     coarse_feats = self.coarse_out(coarse_feats)  #[B, C, N]
                     coarse_feats = coarse_feats.transpose(1,2).squeeze(0)
-
                     return coarse_feats #[N,C2]
 
         # elif phase == "fine":

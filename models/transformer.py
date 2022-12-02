@@ -131,15 +131,7 @@ class RepositioningTransformer(nn.Module):
 
     def forward(self, src_feat, tgt_feat, s_pcd, t_pcd, src_mask, tgt_mask, data, T = None, timers = None, feature_extractor = 'kpfcn'):
 
-        print('Inside of forward method of RepositioningTransformer')
-        print('src_feat.shape : ', src_feat.shape)
-        print('tgt_feat.shape : ', tgt_feat.shape)
-        print('s_pcd.shape : ', s_pcd.shape)
-        print('t_pcd.shape : ', t_pcd.shape)
-        print('src_mask.shape : ', src_mask.shape)
-        print('tgt_mask.shape : ', tgt_mask.shape)
         self.timers = timers
-
         assert self.d_model == src_feat.size(2), "the feature number of src and transformer must be equal"
         if T is not None:
             R, t = T

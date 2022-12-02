@@ -101,10 +101,6 @@ class _AstrivisFCGF(Dataset):
         tgt_feats = tgt_feats_data['descriptors']
         src_feats_indices = src_feats_data['indices']
         tgt_feats_indices = tgt_feats_data['indices']
-        print('src_feats.shape : ', src_feats.shape)
-        print('tgt_feats.shape : ', tgt_feats.shape)
-        print('src_feats_indices.shape : ', src_feats_indices.shape)
-        print('tgt_feats_indices.shape : ', tgt_feats_indices.shape)
                 
         matches = np.load(self.path + folder_string + '/matches/' + filename)
         correspondences = np.array(matches['matches'])

@@ -59,8 +59,6 @@ class Matching(nn.Module):
     @staticmethod
     @torch.no_grad()
     def get_match( conf_matrix, thr, mutual=True):
-        print('thr in get_match : ', thr)
-        print('mutual : ', mutual)
         mask = conf_matrix > thr
         #mutual nearest
         if mutual:
@@ -99,14 +97,6 @@ class Matching(nn.Module):
         @param tgt_mask: [B, T]
         @return:
         '''
-        print('Inside of forward method of Matching')
-        print('src_feats.shape : ', src_feats.shape)
-        print('tgt_feats.shape : ', tgt_feats.shape)
-        print('src_pe.shape :', src_pe.shape)
-        print('tgt_pe.shape : ', tgt_pe.shape)
-        print('src_mask.shape : ', src_mask.shape)
-        print('tgt_mask.shape : ', tgt_mask.shape)
-        
         src_feats = self.src_proj(src_feats)
         tgt_feats = self.src_proj(tgt_feats)
         data["src_feats_nopos"] = src_feats
@@ -141,9 +131,6 @@ class Matching(nn.Module):
             assign_matrix = log_assign_matrix.exp()
             conf_matrix = assign_matrix[:, :-1, :-1].contiguous()
 
-        print('conf_matrix.shape : ', conf_matrix.shape)
-        print('conf_matrix : ', conf_matrix)
         coarse_match, _, _ = self.get_match(conf_matrix, self.confidence_threshold, self.mutual)
-        print('coarse_match.shape : ', coarse_match.shape)
         return conf_matrix, coarse_match
 
