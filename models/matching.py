@@ -157,7 +157,7 @@ class Matching(nn.Module):
             conf_matrix = assign_matrix[:, :-1, :-1].contiguous()
 
         print('conf_matrix.shape : ', conf_matrix.shape)
-        print('coarse_match.shape : ', coarse_match.shape)
         coarse_match, _, _ = self.get_match(conf_matrix, self.confidence_threshold)
+        print('coarse_match.shape : ', coarse_match.shape)
         return conf_matrix, coarse_match
 
