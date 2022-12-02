@@ -529,7 +529,7 @@ def collate_fn_4dmatch(list_data, config, neighborhood_limits, feature_extractor
             k  = 50
             input_neighbors[coarse_level] = torch.tensor(np.argpartition(dists, k, axis =- 1)[:, :k])
             
-            c_flow = blend_scene_flow( src_coarse, tgt_pcd, s2t_flow, knn=3)
+            c_flow = blend_scene_flow( src_coarse, src_pcd, s2t_flow, knn=3)
             c_src_pcd_deformed = src_coarse + c_flow
             s_pc_wrapped = (np.matmul(rot, c_src_pcd_deformed.T ) + trn).T
             coarse_match_gt = torch.from_numpy( multual_nn_correspondence(s_pc_wrapped , tgt_coarse , search_radius=config['coarse_match_radius']))
