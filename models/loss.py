@@ -91,8 +91,8 @@ class MatchMotionLoss(nn.Module):
         tgt_mask = data['tgt_mask']
         conf_matrix_pred = data['conf_matrix_pred']
         match_gt = data['coarse_matches']
-        R_s2t_gt = data['batched_rot']
-        t_s2t_gt = data['batched_trn']
+        R_s2t_gt = data['batched_rot'].float()
+        t_s2t_gt = data['batched_trn'].float()
 
         #get the overlap mask, for dense motion loss
         s_overlap_mask = torch.zeros_like(src_mask).bool()
@@ -118,9 +118,9 @@ class MatchMotionLoss(nn.Module):
 
             if self.dataset == '4dmatch':
                 spcd_deformed = data['s_pcd'] + s2t_flow
-                src_pcd_wrapped_gt = (torch.matmul(R_s2t_gt, spcd_deformed.transpose(1, 2)) + t_s2t_gt).transpose(1, 2)
+                src_pcd_wrapped_gt = (torch.matmul(R_s2t_gt, spcd_deformed.float().transpose(1, 2)) + t_s2t_gt).transpose(1, 2)
             else : # 3dmatch
-                src_pcd_wrapped_gt = (torch.matmul(R_s2t_gt, data['s_pcd'].transpose(1, 2)) + t_s2t_gt).transpose(1, 2)
+                src_pcd_wrapped_gt = (torch.matmul(R_s2t_gt, data['s_pcd'].float().transpose(1, 2)) + t_s2t_gt).transpose(1, 2)
             sflow_gt = src_pcd_wrapped_gt - data['s_pcd']
 
             e1 = torch.sum(torch.abs(sflow_pred - sflow_gt), 2)
