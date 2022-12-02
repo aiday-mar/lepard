@@ -146,8 +146,8 @@ class Trainer(object):
             if self.timers: self.timers.toc('load batch')
             ##################################
             if self.timers: self.timers.tic('inference_one_batch')
-            print(inputs['stack_lengths'])
-            if inputs['stack_lengths'][0] < 10000 and inputs['stack_lengths'][1] < 10000:
+            print(inputs['stack_lengths'][self.config.coarse_level])
+            if inputs['stack_lengths'][self.config.coarse_level][0] < 10000 and inputs['stack_lengths'][self.config.coarse_level][1] < 10000:
                 loss_info = self.inference_one_batch(inputs, phase)
                 ###################################################
                 # run optimisation
