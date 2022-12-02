@@ -114,9 +114,7 @@ class Matching(nn.Module):
         @param tgt_mask: [B, T]
         @return:
         '''
-        print('\n')
         print('Inside of forward method of Matching')
-        
         print('src_feats.shape : ', src_feats.shape)
         print('tgt_feats.shape : ', tgt_feats.shape)
         print('src_pe.shape :', src_pe.shape)
@@ -126,28 +124,19 @@ class Matching(nn.Module):
         
         src_feats = self.src_proj(src_feats)
         tgt_feats = self.src_proj(tgt_feats)
-
-
         data["src_feats_nopos"] = src_feats
         data["tgt_feats_nopos"] = tgt_feats
-
 
         if not self.entangled :
             src_feats = VolPE.embed_pos(pe_type, src_feats, src_pe)
             tgt_feats = VolPE.embed_pos(pe_type, tgt_feats, tgt_pe)
-
-
         data["src_feats"] = src_feats
         data["tgt_feats"] = tgt_feats
 
-
-        src_feats, tgt_feats = map(lambda feat: feat / feat.shape[-1] ** .5,
-                                   [src_feats, tgt_feats])
-
+        src_feats, tgt_feats = map(lambda feat: feat / feat.shape[-1] ** .5, [src_feats, tgt_feats])
         if self.match_type == "dual_softmax":
             # dual softmax matching
             sim_matrix_1 = torch.einsum("bsc,btc->bst", src_feats, tgt_feats) / self.temperature
-
             if src_mask is not None:
                 sim_matrix_2 = sim_matrix_1.clone()
                 sim_matrix_1.masked_fill_(~src_mask[:, :, None], float('-inf'))
@@ -155,7 +144,6 @@ class Matching(nn.Module):
                 conf_matrix = F.softmax(sim_matrix_1, 1) * F.softmax(sim_matrix_2, 2)
             else :
                 conf_matrix = F.softmax(sim_matrix_1, 1) * F.softmax(sim_matrix_1, 2)
-
         elif self.match_type == "sinkhorn" :
             #optimal transport sinkhoron
             sim_matrix = torch.einsum("bsc,btc->bst", src_feats, tgt_feats)
@@ -165,10 +153,11 @@ class Matching(nn.Module):
                     ~(src_mask[..., None] * tgt_mask[:, None]).bool(), float('-inf'))
 
             log_assign_matrix = log_optimal_transport( sim_matrix, self.bin_score, self.skh_iters, src_mask, tgt_mask)
-
             assign_matrix = log_assign_matrix.exp()
             conf_matrix = assign_matrix[:, :-1, :-1].contiguous()
 
+        print('conf_matrix.shape : ', conf_matrix.shape)
+        print('coarse_match.shape : ', coarse_match.shape)
         coarse_match, _, _ = self.get_match(conf_matrix, self.confidence_threshold)
         return conf_matrix, coarse_match
 

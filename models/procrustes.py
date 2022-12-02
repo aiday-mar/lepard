@@ -1,11 +1,9 @@
 import torch
 import torch.nn as nn
 
-
 def topk(data, num_topk):
     sort, idx = data.sort(descending=True)
     return sort[:num_topk], idx[:num_topk]
-
 
 class SoftProcrustesLayer(nn.Module):
     def __init__(self, config):
@@ -42,9 +40,7 @@ class SoftProcrustesLayer(nn.Module):
         R = torch.matmul( U, svT).float().to(device)
         t = mean_Y.transpose(1,2) - torch.matmul( R, mean_X.transpose(1,2) )
         return R, t, condition
-
-
-
+    
     def forward(self,  conf_matrix,  src_pcd, tgt_pcd,  src_mask, tgt_mask):
         '''
         @param conf_matrix:
@@ -55,8 +51,8 @@ class SoftProcrustesLayer(nn.Module):
         @return:
         '''
 
+        print('Inside of forward method of SoftProcrustesLayer')
         bsize, N, M = conf_matrix.shape
-
         # subsample correspondence
         src_len = src_mask.sum(dim=1)
         tgt_len = tgt_mask.sum(dim=1)
@@ -82,7 +78,6 @@ class SoftProcrustesLayer(nn.Module):
             R = torch.eye(3)[None].repeat(bsize,1,1).type_as(conf_matrix)
             t = torch.zeros(3, 1)[None].repeat(bsize,1,1).type_as(conf_matrix)
             condition = torch.zeros(bsize).type_as(conf_matrix)
-
         #filter unreliable solution with condition nnumber
         solution_mask = condition < self.max_condition_num
         R_forwd = R.clone()
