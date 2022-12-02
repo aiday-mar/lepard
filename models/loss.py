@@ -108,11 +108,11 @@ class MatchMotionLoss(nn.Module):
         loss = loss + self.mat_w * focal_coarse
 
         if recall > 0.01 and self.mot_w > 0:
-            R_s2t_pred = data["R_s2t_pred"]
-            t_s2t_pred = data["t_s2t_pred"]
+            R_s2t_pred = data["R_s2t_pred"].float()
+            t_s2t_pred = data["t_s2t_pred"].float()
 
             #compute predicted flow. Note, if 4dmatch, the R_pred,t_pred try to find the best rigid fit of deformation
-            src_pcd_wrapped_pred = (torch.matmul(R_s2t_pred, data['s_pcd'].transpose(1, 2)) + t_s2t_pred).transpose(1, 2)
+            src_pcd_wrapped_pred = (torch.matmul(R_s2t_pred, data['s_pcd'].float().transpose(1, 2)) + t_s2t_pred).transpose(1, 2)
             sflow_pred = src_pcd_wrapped_pred - data['s_pcd']
 
 
