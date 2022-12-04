@@ -9,10 +9,7 @@ from lib.tester import get_trainer
 from models.loss import MatchMotionLoss
 from lib.tictok import Timers
 from configs.models import architectures
-
 from torch import optim
-
-
 
 setup_seed(0)
 
@@ -21,7 +18,6 @@ def join(loader, node):
     return '_'.join([str(i) for i in seq])
 
 yaml.add_constructor('!join', join)
-
 
 if __name__ == '__main__':
     # load configs
@@ -55,7 +51,6 @@ if __name__ == '__main__':
         os.system(f'cp -r lib {config.snapshot_dir}')
         shutil.copy2('main.py',config.snapshot_dir)
 
-    
     # model initialization
     config.kpfcn_config.architecture = architectures[config.dataset]
     print('config.feature_extractor : ', config.feature_extractor)
@@ -82,7 +77,6 @@ if __name__ == '__main__':
             weight_decay=config.weight_decay,
         )
     
-
     #create learning rate scheduler
     if  'overfit' in config.exp_dir :
         config.scheduler = optim.lr_scheduler.MultiStepLR(
@@ -90,16 +84,13 @@ if __name__ == '__main__':
             milestones=[config.max_epoch-1], # fix lr during overfitting
             gamma=0.1,
             last_epoch=-1)
-
     else:
         config.scheduler = optim.lr_scheduler.ExponentialLR(
             config.optimizer,
             gamma=config.scheduler_gamma,
         )
 
-
     config.timers = Timers()
-
     # create dataset and dataloader
     train_set, val_set, test_set = get_datasets(config)
     config.train_loader, neighborhood_limits = get_dataloader(train_set,config,shuffle=True, feature_extractor = config.feature_extractor)
