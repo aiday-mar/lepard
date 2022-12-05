@@ -59,7 +59,6 @@ class _AstrivisFCGF(Dataset):
             ]
             
         n_files_per_folder_found = False
-        
         path = ''
         if self.split == 'train':
             path = '/home/aiday.kyzy/dataset/Synthetic/PartialDeformedData/TrainingData/'
