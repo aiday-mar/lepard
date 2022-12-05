@@ -146,7 +146,6 @@ class Trainer(object):
             if self.timers: self.timers.toc('load batch')
             ##################################
             if self.timers: self.timers.tic('inference_one_batch')
-            print(inputs['stack_lengths'][self.config.kpfcn_config.coarse_level])
             if inputs['stack_lengths'][self.config.kpfcn_config.coarse_level][0] < 8000 and inputs['stack_lengths'][self.config.kpfcn_config.coarse_level][1] < 8000:
                 loss_info = self.inference_one_batch(inputs, phase)
                 ###################################################
