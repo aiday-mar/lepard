@@ -203,6 +203,8 @@ class Trainer(object):
                 if self.timers: self.timers.toc('run one epoch')
             self.scheduler.step()
 
+            self._snapshot(epoch, 'epoch_' + str(epoch) + '_fcgf_before_val')
+            
             if  'overfit' in self.config.exp_dir :
                 if stats_meter['loss'].avg < self.best_loss:
                     self.best_loss = stats_meter['loss'].avg
@@ -218,6 +220,6 @@ class Trainer(object):
             
             print('Average loss : ',  stats_meter['loss'].avg)
             print('Best loss : ', str(self.best_loss), ' at epoch : ', str(self.best_epoch))
-            self._snapshot(epoch, 'epoch_fcgf_' + str(epoch))
+            self._snapshot(epoch, 'epoch_' + str(epoch) + '_fcgf_after_val')
 
         print("Training finished!")
