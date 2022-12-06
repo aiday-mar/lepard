@@ -118,6 +118,13 @@ class _AstrivisFCGF(Dataset):
                 
         matches = np.load(self.path + folder_string + '/matches/' + filename)
         correspondences = np.array(matches['matches'])
+        final_correspondences = np.empty((0,2), int)
+        set_src_indices = set()
+        for correspondence in correspondences:
+            if correspondence[0] not in set_src_indices:
+                final_correspondences = np.append(final_correspondences, np.array(np.expand_dims(correspondence, axis=0)), axis=0)
+            set_src_indices.add(correspondence[0])
+        correspondence = final_correspondences
         indices_src = correspondences[:, 0]
         indices_tgt = correspondences[:, 1]
         
