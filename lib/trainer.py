@@ -128,9 +128,13 @@ class Trainer(object):
         num_iter = int(len(self.loader[phase].dataset) // self.loader[phase].batch_size) # drop last incomplete batch
         c_loader_iter = self.loader[phase].__iter__()
         self.optimizer.zero_grad()
-
+        n_iter = 0
+        iter = 10
         for c_iter in tqdm(range(num_iter)):  # loop through this epoch
-
+            n_iter +=1
+            if n_iter == iter:
+                self._snapshot(epoch, 'epoch_' + str(epoch) + '_fcgf_test_iter_' + str(iter))
+                
             if self.timers: self.timers.tic('one_iteration')
             ##################################
             if self.timers: self.timers.tic('load batch')
@@ -146,7 +150,6 @@ class Trainer(object):
             if self.timers: self.timers.toc('load batch')
             ##################################
             if self.timers: self.timers.tic('inference_one_batch')
-            print(inputs['stack_lengths'][self.config.kpfcn_config.coarse_level])
             if inputs['stack_lengths'][self.config.kpfcn_config.coarse_level][0] < 8000 and inputs['stack_lengths'][self.config.kpfcn_config.coarse_level][1] < 8000:
                 loss_info = self.inference_one_batch(inputs, phase)
                 ###################################################
@@ -204,6 +207,8 @@ class Trainer(object):
                 if self.timers: self.timers.toc('run one epoch')
             self.scheduler.step()
 
+            self._snapshot(epoch, 'epoch_' + str(epoch) + '_fcgf_before_val')
+            
             if  'overfit' in self.config.exp_dir :
                 if stats_meter['loss'].avg < self.best_loss:
                     self.best_loss = stats_meter['loss'].avg
@@ -219,6 +224,6 @@ class Trainer(object):
             
             print('Average loss : ',  stats_meter['loss'].avg)
             print('Best loss : ', str(self.best_loss), ' at epoch : ', str(self.best_epoch))
-            self._snapshot(epoch, 'epoch_fcgf_' + str(epoch))
+            self._snapshot(epoch, 'epoch_' + str(epoch) + '_fcgf_after_val')
 
         print("Training finished!")
