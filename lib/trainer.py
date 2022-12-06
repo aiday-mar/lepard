@@ -128,9 +128,13 @@ class Trainer(object):
         num_iter = int(len(self.loader[phase].dataset) // self.loader[phase].batch_size) # drop last incomplete batch
         c_loader_iter = self.loader[phase].__iter__()
         self.optimizer.zero_grad()
-
+        n_iter = 0
+        iter = 10
         for c_iter in tqdm(range(num_iter)):  # loop through this epoch
-
+            n_iter +=1
+            if n_iter == iter:
+                self._snapshot(epoch, 'epoch_' + str(epoch) + '_fcgf_test_iter_' + str(iter))
+                
             if self.timers: self.timers.tic('one_iteration')
             ##################################
             if self.timers: self.timers.tic('load batch')
