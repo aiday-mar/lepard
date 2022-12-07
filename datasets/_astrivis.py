@@ -60,12 +60,13 @@ class _Astrivis(Dataset):
             
         n_files_per_folder_found = False
         path = ''
+        type_data = 'PartialDeformedData'
         if self.split == 'train':
-            path = '/home/aiday.kyzy/dataset/Synthetic/PartialDeformedData/TrainingData/'
+            path = '/home/aiday.kyzy/dataset/Synthetic/' + type_data + '/TrainingData/'
         elif self.split == 'val':
-            path = '/home/aiday.kyzy/dataset/Synthetic/PartialDeformedData/ValidationData/'
+            path = '/home/aiday.kyzy/dataset/Synthetic/' + type_data + '/ValidationData/'
         elif self.split == 'test':
-            path = '/home/aiday.kyzy/dataset/Synthetic/PartialDeformedData/TestingData/'
+            path = '/home/aiday.kyzy/dataset/Synthetic/' + type_data + '/TestingData/'
         
         self.path = path
         for folder in os.listdir(self.path):

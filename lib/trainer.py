@@ -133,7 +133,7 @@ class Trainer(object):
         for c_iter in tqdm(range(num_iter)):  # loop through this epoch
             n_iter +=1
             if n_iter == iter:
-                self._snapshot(epoch, 'epoch_' + str(epoch) + '_fcgf_test_iter_' + str(iter))
+                self._snapshot(epoch, 'lepard_epoch_' + str(epoch) + '_fcgf_test_iter_' + str(iter))
                 
             if self.timers: self.timers.tic('one_iteration')
             ##################################
@@ -207,7 +207,7 @@ class Trainer(object):
                 if self.timers: self.timers.toc('run one epoch')
             self.scheduler.step()
 
-            self._snapshot(epoch, 'epoch_' + str(epoch) + '_fcgf_before_val')
+            self._snapshot(epoch, 'lepard_epoch_' + str(epoch) + '_fcgf_before_val')
             
             if  'overfit' in self.config.exp_dir :
                 if stats_meter['loss'].avg < self.best_loss:
@@ -224,6 +224,6 @@ class Trainer(object):
             
             print('Average loss : ',  stats_meter['loss'].avg)
             print('Best loss : ', str(self.best_loss), ' at epoch : ', str(self.best_epoch))
-            self._snapshot(epoch, 'epoch_' + str(epoch) + '_fcgf_after_val')
+            self._snapshot(epoch, 'lepard_epoch_' + str(epoch) + '_fcgf_after_val')
 
         print("Training finished!")
