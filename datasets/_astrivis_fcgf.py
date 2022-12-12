@@ -87,7 +87,6 @@ class _AstrivisFCGF(Dataset):
     def __len__(self):
         return self.number_matches
 
-
     def __getitem__(self, index):
 
         folder_number = index // self.n_files_per_folder
@@ -95,11 +94,11 @@ class _AstrivisFCGF(Dataset):
         folder_string = 'model' + str(self.folders[folder_number]).zfill(3)
         files_array = self.matches[folder_string]
         filename = files_array[idx_inside_folder]
-        print('filename : ', filename)
+        # print('filename : ', filename)
 
         file_pointers = filename[:-4]
         file_pointers = file_pointers.split('_')
-        print('file_pointers : ', file_pointers)
+        # print('file_pointers : ', file_pointers)
         
         if self.folder_type == 'PartialDeformedData':
             src_pcd_file = file_pointers[0] + '_' + file_pointers[2] + '.ply'
