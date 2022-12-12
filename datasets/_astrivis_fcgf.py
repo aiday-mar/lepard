@@ -43,7 +43,7 @@ class _AstrivisFCGF(Dataset):
                             '189', '190', '192', '193', '195', '196', '198', 
                             '199', '200', '202', '203', '205', '206', '208', 
                             '209', '210', '212', '213', '215', '216', '217', 
-                            '219', '220', '222', '223', '224', '225'
+                            '219', '220', '222', '223' # full deformed data does not have these: '224', '225'
                             ]
         elif split == 'val':
             self.folders = [
@@ -60,12 +60,13 @@ class _AstrivisFCGF(Dataset):
             
         n_files_per_folder_found = False
         path = ''
+        folder_type = 'FullDeformedData'
         if self.split == 'train':
-            path = '/home/aiday.kyzy/dataset/Synthetic/PartialDeformedData/TrainingData/'
+            path = '/home/aiday.kyzy/dataset/Synthetic/' + folder_type + '/TrainingData/'
         elif self.split == 'val':
-            path = '/home/aiday.kyzy/dataset/Synthetic/PartialDeformedData/ValidationData/'
+            path = '/home/aiday.kyzy/dataset/Synthetic/' + folder_type + '/ValidationData/'
         elif self.split == 'test':
-            path = '/home/aiday.kyzy/dataset/Synthetic/PartialDeformedData/TestingData/'
+            path = '/home/aiday.kyzy/dataset/Synthetic/' + folder_type + '/TestingData/'
         
         self.path = path
         for folder in os.listdir(self.path):
