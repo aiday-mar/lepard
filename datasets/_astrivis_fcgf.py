@@ -94,9 +94,11 @@ class _AstrivisFCGF(Dataset):
         folder_string = 'model' + str(self.folders[folder_number]).zfill(3)
         files_array = self.matches[folder_string]
         filename = files_array[idx_inside_folder]
-                
+        print('filename : ', filename)
+        
         file_pointers = filename[:-4]
         file_pointers = file_pointers.split('_')
+        print('file_pointers : ', file_pointers)
         
         if self.folder_type == 'PartialDeformedData':
             src_pcd_file = file_pointers[0] + '_' + file_pointers[2] + '.ply'
