@@ -60,13 +60,13 @@ class _AstrivisFCGF(Dataset):
             
         n_files_per_folder_found = False
         path = ''
-        folder_type = 'FullDeformedData'
+        self.folder_type = 'FullDeformedData'
         if self.split == 'train':
-            path = '/home/aiday.kyzy/dataset/Synthetic/' + folder_type + '/TrainingData/'
+            path = '/home/aiday.kyzy/dataset/Synthetic/' + self.folder_type + '/TrainingData/'
         elif self.split == 'val':
-            path = '/home/aiday.kyzy/dataset/Synthetic/' + folder_type + '/ValidationData/'
+            path = '/home/aiday.kyzy/dataset/Synthetic/' + self.folder_type + '/ValidationData/'
         elif self.split == 'test':
-            path = '/home/aiday.kyzy/dataset/Synthetic/' + folder_type + '/TestingData/'
+            path = '/home/aiday.kyzy/dataset/Synthetic/' + self.folder_type + '/TestingData/'
         
         self.path = path
         for folder in os.listdir(self.path):
@@ -97,6 +97,7 @@ class _AstrivisFCGF(Dataset):
                 
         file_pointers = filename[:-4]
         file_pointers = file_pointers.split('_')
+        print('file_pointers : ', file_pointers)
         
         src_pcd_file = file_pointers[0] + '_' + file_pointers[2] + '.ply'
         tgt_pcd_file = file_pointers[1] + '_' + file_pointers[3] + '.ply'
