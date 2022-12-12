@@ -72,10 +72,11 @@ class _AstrivisFCGF(Dataset):
         for folder in os.listdir(self.path):
             self.matches[folder] = []
             for filename in os.listdir(self.path + folder + '/matches'):
-                self.matches[folder].append(filename)
-                self.number_matches += 1
-                if not n_files_per_folder_found:
-                    self.n_files_per_folder += 1
+                if filename != 'overlap.txt':
+                    self.matches[folder].append(filename)
+                    self.number_matches += 1
+                    if not n_files_per_folder_found:
+                        self.n_files_per_folder += 1
             
             n_files_per_folder_found = True
     
@@ -95,7 +96,7 @@ class _AstrivisFCGF(Dataset):
         files_array = self.matches[folder_string]
         filename = files_array[idx_inside_folder]
         print('filename : ', filename)
-        
+
         file_pointers = filename[:-4]
         file_pointers = file_pointers.split('_')
         print('file_pointers : ', file_pointers)
