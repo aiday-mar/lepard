@@ -99,8 +99,14 @@ class _AstrivisFCGF(Dataset):
         file_pointers = file_pointers.split('_')
         print('file_pointers : ', file_pointers)
         
-        src_pcd_file = file_pointers[0] + '_' + file_pointers[2] + '.ply'
-        tgt_pcd_file = file_pointers[1] + '_' + file_pointers[3] + '.ply'
+        if self.folder_type == 'PartialDeformedData':
+            src_pcd_file = file_pointers[0] + '_' + file_pointers[2] + '.ply'
+            tgt_pcd_file = file_pointers[1] + '_' + file_pointers[3] + '.ply'
+        elif self.folder_type == 'FullDeformedData':
+            src_pcd_file = file_pointers[0] + '.ply'
+            tgt_pcd_file = file_pointers[1] + '.ply'
+        else:
+            raise Exception('Specify a valid data type')
         
         src_pcd = o3d.io.read_point_cloud(self.path + folder_string + '/transformed/' + src_pcd_file)
         src_pcd = np.array(src_pcd.points)
