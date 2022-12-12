@@ -97,7 +97,6 @@ class _AstrivisFCGF(Dataset):
                 
         file_pointers = filename[:-4]
         file_pointers = file_pointers.split('_')
-        print('file_pointers : ', file_pointers)
         
         if self.folder_type == 'PartialDeformedData':
             src_pcd_file = file_pointers[0] + '_' + file_pointers[2] + '.ply'
