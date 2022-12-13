@@ -92,6 +92,7 @@ class _AstrivisFCGF(Dataset):
         folder_number = index // self.n_files_per_folder
         idx_inside_folder = index % self.n_files_per_folder
         folder_string = 'model' + str(self.folders[folder_number]).zfill(3)
+        print('folder_string : ', folder_string)
         files_array = self.matches[folder_string]
         print('files_array : ', files_array)
         print('idx_inside_folder : ', idx_inside_folder)
