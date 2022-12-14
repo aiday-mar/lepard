@@ -98,7 +98,7 @@ if __name__ == '__main__':
     config.test_loader, _ = get_dataloader(test_set, config, shuffle=False, neighborhood_limits=neighborhood_limits, feature_extractor = config.feature_extractor)
     
     # config.desc_loss = MetricLoss(config)
-    config.desc_loss = MatchMotionLoss (config['train_loss'])
+    config.desc_loss = MatchMotionLoss(config['train_loss'])
 
     trainer = get_trainer(config)
     if(config.mode=='train'):
