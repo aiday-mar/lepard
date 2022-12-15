@@ -59,14 +59,13 @@ class Matching(nn.Module):
     @staticmethod
     @torch.no_grad()
     def get_match( conf_matrix, thr, mutual=True):
+        
         mask = conf_matrix > thr
-        #mutual nearest
         if mutual:
             mask = mask \
                    * (conf_matrix == conf_matrix.max(dim=2, keepdim=True)[0]) \
                    * (conf_matrix == conf_matrix.max(dim=1, keepdim=True)[0])
 
-        #find all valid coarse matches
         index = (mask==True).nonzero()
         b_ind, src_ind, tgt_ind = index[:,0], index[:,1], index[:,2]
         mconf = conf_matrix[b_ind, src_ind, tgt_ind]
