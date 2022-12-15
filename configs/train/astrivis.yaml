@@ -84,6 +84,7 @@ do_valid: True
 do_test: True
 pretrain: ''
 feature_extractor: kpfcn
+data_type: full_deformed
 
 # optimiser:
 optimizer: SGD

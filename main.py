@@ -102,6 +102,6 @@ if __name__ == '__main__':
 
     trainer = get_trainer(config)
     if(config.mode=='train'):
-        trainer.train()
+        trainer.train(config.feature_extractor, config.data_type, config.coarse_matching.mutual)
     else:
         trainer.test()

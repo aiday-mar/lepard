@@ -119,7 +119,7 @@ class Trainer(object):
 
         return loss_info
 
-    def inference_one_epoch(self, epoch, phase):
+    def inference_one_epoch(self, epoch, phase, feature_extractor = None, data_type = None, mutual = True):
         gc.collect()
         assert phase in ['train', 'val', 'test']
 
@@ -132,9 +132,12 @@ class Trainer(object):
         iter = 10
         for c_iter in tqdm(range(num_iter)):  # loop through this epoch
             n_iter +=1
-            if n_iter == iter:
-                self._snapshot(epoch, 'lepard_epoch_' + str(epoch) + '_fcgf_test_iter_' + str(iter))
-                
+            if feature_extractor and data_type and n_iter == iter:
+                if mutual:
+                    self._snapshot(epoch, 'lepard_' + data_type + '_epoch_' + str(epoch) + '_' + feature_extractor + '_mutual_true_test_iter_' + str(iter))
+                else:
+                    self._snapshot(epoch, 'lepard_' + data_type + '_epoch_' + str(epoch) + '_' + feature_extractor + '_mutual_false_test_iter_' + str(iter))
+                                   
             if self.timers: self.timers.tic('one_iteration')
             ##################################
             if self.timers: self.timers.tic('load batch')
@@ -196,19 +199,26 @@ class Trainer(object):
         self.logger.write(message + '\n')
         return stats_meter
 
-    def train(self):
+    def train(self, feature_extractor = '', data_type = '', mutual = True):
         print('Start training...')
+        print('feature extractor : ', feature_extractor)
+        print('data type : ', data_type)
+        print('mutual : ', mutual)
+        
         for epoch in range(self.start_epoch, self.max_epoch):
             print('epoch : ', str(epoch), '/', str(self.max_epoch -1))
             
             with torch.autograd.set_detect_anomaly(True):
                 if self.timers: self.timers.tic('run one epoch')
-                stats_meter = self.inference_one_epoch(epoch, 'train')
+                stats_meter = self.inference_one_epoch(epoch, 'train', feature_extractor, data_type, mutual)
                 if self.timers: self.timers.toc('run one epoch')
             self.scheduler.step()
-
-            self._snapshot(epoch, 'lepard_epoch_' + str(epoch) + '_fcgf_before_val')
             
+            if mutual:
+                self._snapshot(epoch, 'lepard_' + data_type + '_epoch_' + str(epoch) + '_' + feature_extractor + '_mutual_true_before_val')
+            else:
+                self._snapshot(epoch, 'lepard_' + data_type + '_epoch_' + str(epoch) + '_' + feature_extractor + '_mutual_false_before_val')
+                
             if  'overfit' in self.config.exp_dir :
                 if stats_meter['loss'].avg < self.best_loss:
                     self.best_loss = stats_meter['loss'].avg
@@ -224,6 +234,10 @@ class Trainer(object):
             
             print('Average loss : ',  stats_meter['loss'].avg)
             print('Best loss : ', str(self.best_loss), ' at epoch : ', str(self.best_epoch))
-            self._snapshot(epoch, 'lepard_epoch_' + str(epoch) + '_fcgf_after_val')
-
+            
+            if mutual:
+                self._snapshot(epoch, 'lepard_' + data_type + '_epoch_' + str(epoch) + '_' + feature_extractor + '_mutual_true_after_val')
+            else:
+                self._snapshot(epoch, 'lepard_' + data_type + '_epoch_' + str(epoch) + '_' + feature_extractor + '_mutual_false_after_val')
+                
         print("Training finished!")
