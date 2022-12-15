@@ -126,8 +126,18 @@ class _Astrivis(Dataset):
         file_pointers = filename[:-4]
         file_pointers = file_pointers.split('_')
         
-        src_pcd_file = file_pointers[0] + '_' + file_pointers[2] + '.ply'
-        tgt_pcd_file = file_pointers[1] + '_' + file_pointers[3] + '.ply'
+        if self.folder_type == 'PartialDeformedData':
+            src_pcd_file = file_pointers[0] + '_' + file_pointers[2] + '.ply'
+            tgt_pcd_file = file_pointers[1] + '_' + file_pointers[3] + '.ply'
+            src_pcd_trans = file_pointers[0] + '_' + file_pointers[2] + '_se4.h5'
+            tgt_pcd_trans = file_pointers[1] + '_' + file_pointers[3] + '_se4.h5'
+        elif self.folder_type == 'FullDeformedData':
+            src_pcd_file = file_pointers[0] + '.ply'
+            tgt_pcd_file = file_pointers[1] + '.ply'
+            src_pcd_trans = file_pointers[0] + '_se4.h5'
+            tgt_pcd_trans = file_pointers[1] + '_se4.h5'
+        else:
+            raise Exception('Specify a valid data type')
         
         src_pcd = o3d.io.read_point_cloud(self.path + folder_string + '/transformed/' + src_pcd_file)
         src_pcd = np.array(src_pcd.points)
@@ -157,10 +167,7 @@ class _Astrivis(Dataset):
             src_idx = indices_src[i]
             tgt_idx = indices_tgt[i]
             s2t_flow[src_idx] = src_pcd_centered[src_idx] - tgt_pcd_centered[tgt_idx]
-                
-        src_pcd_trans = file_pointers[0] + '_' + file_pointers[2] + '_se4.h5'
-        tgt_pcd_trans = file_pointers[1] + '_' + file_pointers[3] + '_se4.h5'
-        
+                        
         src_trans_file=h5py.File(self.path + folder_string + '/transformed/' + src_pcd_trans, "r")
         src_pcd_transform = np.array(src_trans_file['transformation'])
         
