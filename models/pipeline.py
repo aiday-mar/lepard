@@ -9,6 +9,7 @@ class Pipeline(nn.Module):
     def __init__(self, config):
         super(Pipeline, self).__init__()
         self.config = config
+        self.feature_extractor = config.feature_extractor
         self.backbone = KPFCN(config['kpfcn_config'])
         self.pe_type = config['coarse_transformer']['pe_type']
         self.positioning_type = config['coarse_transformer']['positioning_type']
