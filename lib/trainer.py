@@ -69,7 +69,7 @@ class Trainer(object):
         if name is None:
             filename = os.path.join(self.save_dir, f'model_{epoch}.pth')
         else:
-            filename = os.path.join(self.save_dir, f'model_{name}.pth')
+            filename = os.path.join(self.save_dir, f'{name}.pth')
         self.logger.write(f"Save model to {filename}\n")
         torch.save(state, filename, _use_new_zipfile_serialization=False)
 
