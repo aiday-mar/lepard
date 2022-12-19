@@ -19,7 +19,11 @@ class _Astrivis(Dataset):
         self.number_matches = 0
         self.n_files_per_folder = 0
         self.config = config
-        self.folder_type = 'FullDeformedData'
+        if self.config.data_type == 'full_deformed':
+            self.folder_type = 'FullDeformedData'
+        elif self.config.data_type == 'partial_deformed':
+            self.folder_type = 'PartialDeformedData'
+
         if split == 'train':
             if self.folder_type == 'FullDeformedData':
                 self.folders = [
@@ -47,7 +51,7 @@ class _Astrivis(Dataset):
                                 '209', '210', '212', '213', '216', '217', 
                                 '219', '220', '222', '223' # full deformed data does not have these: '224', '225', '215', '156', '163', '111', '101'
                                 ]
-            else:
+            elif self.folder_type == 'PartialDeformedData':
                 self.folders = [
                                 '000', '001', '003', '004', '006', '007', '009', 
                                 '010', '011', '013', '014', '016', '017', '018', 

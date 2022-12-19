@@ -19,7 +19,11 @@ class _AstrivisFCGF(Dataset):
         self.number_matches = 0
         self.n_files_per_folder = 0
         self.config = config
-        self.folder_type = 'FullDeformedData'
+        if self.config.data_type == 'full_deformed':
+            self.folder_type = 'FullDeformedData'
+        elif self.config.data_type == 'partial_deformed':
+            self.folder_type = 'PartialDeformedData'
+
         if split == 'train':
             if self.folder_type == 'FullDeformedData':
                 self.folders = [
@@ -47,7 +51,7 @@ class _AstrivisFCGF(Dataset):
                                 '209', '210', '212', '213', '216', '217', 
                                 '219', '220', '222', '223' # full deformed data does not have these: '224', '225', '215', '156', '163', '111', '101'
                                 ]
-            else:
+            elif self.folder_type == 'PartialDeformedData':
                 self.folders = [
                                 '000', '001', '003', '004', '006', '007', '009', 
                                 '010', '011', '013', '014', '016', '017', '018', 
@@ -124,11 +128,8 @@ class _AstrivisFCGF(Dataset):
         print('files_array : ', files_array)
         print('idx_inside_folder : ', idx_inside_folder)
         filename = files_array[idx_inside_folder]
-        # print('filename : ', filename)
-
         file_pointers = filename[:-4]
         file_pointers = file_pointers.split('_')
-        # print('file_pointers : ', file_pointers)
         
         if self.folder_type == 'PartialDeformedData':
             src_pcd_file = file_pointers[0] + '_' + file_pointers[2] + '.ply'
