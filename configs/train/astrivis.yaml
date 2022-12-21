@@ -25,7 +25,7 @@ kpfcn_config:
   fine_feature_dim:  264
   coarse_match_radius: 0.024 # 0.05 for L: -3, 0.06 for L: -2, 0.1 for L: -1
   coarse_level: -2
-#  fine_match_radius: 0.0375
+# fine_match_radius: 0.0375
 
 
 coarse_matching: &coarse_matching
@@ -84,7 +84,7 @@ do_valid: True
 do_test: True
 pretrain: ''
 feature_extractor: kpfcn
-data_type: full_deformed
+data_type: partial_deformed
 
 # optimiser:
 optimizer: SGD
@@ -108,5 +108,5 @@ split: {
   "train": split/train,
   "val": split/val,
   "test": split/4DMatch
-#  "test": split/4DLoMatch
+# "test": split/4DLoMatch
 }
