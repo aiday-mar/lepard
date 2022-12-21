@@ -199,12 +199,15 @@ class Trainer(object):
         self.logger.write(message + '\n')
         return stats_meter
 
-    def train(self, feature_extractor = '', data_type = '', mutual = True):
+    def train(self, feature_extractor = '', data_type = '', mutual = True, starting_epoch = None):
         print('Start training...')
         print('feature extractor : ', feature_extractor)
         print('data type : ', data_type)
         print('mutual : ', mutual)
         
+        if starting_epoch is not None:
+            self.start_epoch = starting_epoch
+            
         for epoch in range(self.start_epoch, self.max_epoch):
             print('epoch : ', str(epoch), '/', str(self.max_epoch -1))
             

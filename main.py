@@ -100,8 +100,9 @@ if __name__ == '__main__':
     # config.desc_loss = MetricLoss(config)
     config.desc_loss = MatchMotionLoss(config['train_loss'])
 
+    print('config.starting_epoch : ', config.starting_epoch)
     trainer = get_trainer(config)
     if(config.mode=='train'):
-        trainer.train(config.feature_extractor, config.data_type, config.coarse_matching.mutual)
+        trainer.train(config.feature_extractor, config.data_type, config.coarse_matching.mutual, starting_epoch = config.starting_epoch if config.starting_epoch else None)
     else:
         trainer.test()
