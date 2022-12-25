@@ -82,7 +82,7 @@ verbose: True
 verbose_freq: 1000
 do_valid: True
 do_test: True
-pretrain: 'pretrained/lepard_partial_deformed_epoch_1_fcgf_mutual_false.pth'
+pretrain: 'pretrained/lepard_full_deformed_epoch_5_fcgf_mutual_false.pth'
 feature_extractor: fcgf
 data_type: full_deformed
 starting_epoch: 6
