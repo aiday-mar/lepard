@@ -14,6 +14,8 @@ class _AstrivisFCGF(Dataset):
 
         assert split in ['train','val','test']
         print('split : ', split)
+        print('data type : ', self.folder_type)
+        
         self.split = split
         self.matches = {}
         self.number_matches = 0
