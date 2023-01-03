@@ -82,10 +82,10 @@ verbose: True
 verbose_freq: 1000
 do_valid: True
 do_test: True
-pretrain: 'pretrained/lepard_full_deformed_epoch_6_fcgf_mutual_true.pth'
+pretrain: 'pretrained/lepard_full_deformed_epoch_7_fcgf_mutual_true.pth'
 feature_extractor: fcgf
 data_type: full_deformed
-starting_epoch: 7
+starting_epoch: 8
 
 # optimiser:
 optimizer: SGD
